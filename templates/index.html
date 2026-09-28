@@ -27,7 +27,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; position: relative; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; }
 
         header {
             background-color: rgba(30, 41, 59, 0.9);
@@ -52,7 +52,7 @@
             gap: 8px;
         }
 
-        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; padding-bottom: 100px; }
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
 
         .auth-card, .watch-card, .withdraw-section {
             background: var(--card-bg);
@@ -108,85 +108,6 @@
         }
 
         .withdraw-card:hover { border-color: var(--accent-color); }
-
-        /* --- Ghost AI Assistant Styles --- */
-        .ai-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            direction: rtl;
-        }
-
-        .ai-toggle-btn {
-            background: var(--accent-color);
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ai-box {
-            display: none;
-            width: 320px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .ai-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .ai-response {
-            background: var(--bg-color);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            min-height: 60px;
-            margin-bottom: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .ai-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .ai-btn {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--text-main);
-            border: 1px solid var(--accent-color);
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            text-align: right;
-            transition: 0.2s;
-        }
-
-        .ai-btn:hover {
-            background: var(--accent-color);
-        }
     </style>
 </head>
 <body>
@@ -225,7 +146,6 @@
             </div>
 
             <button class="btn" id="watch-btn" onclick="triggerAdReward(3)">Watch Video (+50 Points)</button>
-        </div>
 
         <!-- Withdraw Options -->
         <div class="withdraw-section">
@@ -256,66 +176,7 @@
         {% endif %}
     </div>
 
-    <!-- Ghost AI Assistant Widget -->
-    <div class="ai-widget">
-        <div class="ai-box" id="ai-box">
-            <div class="ai-header">
-                <span>🤖 Ghost AI Guide</span>
-                <span style="cursor: pointer;" onclick="toggleAIBox()">✕</span>
-            </div>
-            <div class="ai-response" id="ai-response-box">
-                أهلاً بك! اضغط على أي سؤال بالأسفل لمعرفة فائدة وطريقة استخدام الموقع.
-            </div>
-            <div class="ai-buttons">
-                <button class="ai-btn" onclick="askGhostGuide('كيف اجمع النقاط؟')">💡 كيف أجمع النقاط؟</button>
-                <button class="ai-btn" onclick="askGhostGuide('كيف اسحب ارباحي؟')">💸 كيف أسحب أرباحي؟</button>
-                <button class="ai-btn" onclick="askGhostGuide('ما هي فائدة موقع GhostPay؟')">🚀 وش فائدة الموقع؟</button>
-            </div>
-        </div>
-        <button class="ai-toggle-btn" onclick="toggleAIBox()">
-            <i class="fa-solid fa-robot"></i> مساعد Ghost AI
-        </button>
-    </div>
-
     <script>
-        // ضع مفتاح الـ API الخاص بك هنا
-        const GEMINI_API_KEY = "ضع_مفتاح_الـ_API_هنا";
-
-        function toggleAIBox() {
-            const box = document.getElementById('ai-box');
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
-
-        async function askGhostGuide(userQuestion) {
-            const responseBox = document.getElementById("ai-response-box");
-            responseBox.innerText = "جاري التحليل واستخراج الإجابة... ⚡️";
-
-            const systemPrompt = "أنت مساعد ذكي خاص بموقع GhostPay. وظيفتك فقط توضيح وشرح فائدة الموقع للزوار: الموقع يقدم مكافآت وأرباح فورية عند التفاعل والضغط كل 3 ثواني، ويمكن تحويل النقاط إلى STC Pay أو UrPay. اشرح بأسلوب سايبر حماسي ومختصر جداً وبدون خروج عن هذا الموضوع.";
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: systemPrompt + "\nسؤال الزائر: " + userQuestion }]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-                if(data.candidates && data.candidates[0].content.parts[0].text) {
-                    responseBox.innerText = data.candidates[0].content.parts[0].text;
-                } else {
-                    responseBox.innerText = "حدث خطأ بسيط في الاتصال، حاول مرة أخرى!";
-                }
-
-            } catch (error) {
-                console.error("Error:", error);
-                responseBox.innerText = "تعذر الاتصال بالذكاء الاصطناعي حالياً.";
-            }
-        }
-
         function handleCredentialResponse(response) {
             fetch('/api/auth/google', {
                 method: 'POST',
