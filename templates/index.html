@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch & Earn | Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #6366f1;
+            --success-color: #10b981;
+            --stc-color: #4f008c;
+            --urpay-color: #0052cc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; }
+
+        header {
+            background-color: rgba(30, 41, 59, 0.9);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--accent-color); display: flex; align-items: center; gap: 8px; }
+        .user-stats { display: flex; gap: 15px; align-items: center; }
+        
+        .stat-badge {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+
+        .auth-card, .watch-card, .withdraw-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .ad-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+        .btn:disabled { background: var(--border-color); cursor: not-allowed; }
+
+        .withdraw-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .withdraw-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .withdraw-card:hover { border-color: var(--accent-color); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-play-circle"></i> Watch & Earn</div>
+        <div class="user-stats">
+            <div class="stat-badge"><i class="fa-solid fa-coins" style="color: #f59e0b;"></i> <span id="pts">{% if user %}{{ user.points }}{% else %}0{% endif %}</span> Pts</div>
+            <div class="stat-badge"><i class="fa-solid fa-wallet" style="color: var(--success-color);"></i> <span id="sar">{% if user %}{{ user.balance_sar }}{% else %}0.00{% endif %}</span> SAR</div>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if not user %}
+        <!-- Google Sign In View -->
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <p style="color: var(--text-muted); margin: 10px 0 20px;">Sign in with Google to save your balance and points securely.</p>
+            <div id="g_id_onload"
+                 data-client_id="{{ google_client_id }}"
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue"></div>
+        </div>
+        {% else %}
+        
+        <!-- Logged In User Dashboard -->
+        <div class="watch-card">
+            <h3>Welcome: {{ user.name }}</h3>
+            <p style="color: var(--text-muted); margin-top: 5px;">{{ user.email }} | <a href="/logout" style="color: #ef4444; text-decoration: none;">Logout</a></p>
+            
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+
+            <!-- Adsterra Banner 1 -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'YOUR_AD_KEY_1',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.topcreativeformat.com/YOUR_KEY_1/invoke.js"></script>
+            </div>
+
+            <div style="position: relative; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; margin-top: 15px;">
+                <iframe src="https://www.youtube-nocookie.com/embed/L_LUpnjgPso" style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
+            </div>
+
+            <button class="btn" id="watch-btn" onclick="triggerAdReward(30)">Watch Video (+50 Points)</button>
+
+            <!-- Adsterra Banner 2 -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'YOUR_AD_KEY_2',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.topcreativeformat.com/YOUR_KEY_2/invoke.js"></script>
+            </div>
+        </div>
+
+        <!-- Withdraw Options -->
+        <div class="withdraw-section">
+            <h3>Select Withdrawal Method</h3>
+            <div class="withdraw-grid">
+                <div class="withdraw-card" onclick="requestWithdraw('STC Pay', 50)">
+                    <i class="fa-solid fa-mobile-screen-button" style="font-size: 1.5rem; color: var(--stc-color);"></i>
+                    <h4 style="margin-top: 8px;">STC Pay</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 50 SAR</p>
+                </div>
+                <div class="withdraw-card" onclick="requestWithdraw('Ur Pay', 50)">
+                    <i class="fa-solid fa-wallet" style="font-size: 1.5rem; color: var(--urpay-color);"></i>
+                    <h4 style="margin-top: 8px;">Ur Pay</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 50 SAR</p>
+                </div>
+                <div class="withdraw-card" onclick="requestWithdraw('iTunes Card', 100)">
+                    <i class="fa-brands fa-apple" style="font-size: 1.5rem;"></i>
+                    <h4 style="margin-top: 8px;">iTunes Card</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 100 SAR</p>
+                </div>
+                <div class="withdraw-card" onclick="requestWithdraw('App Store Card', 100)">
+                    <i class="fa-brands fa-app-store-ios" style="font-size: 1.5rem;"></i>
+                    <h4 style="margin-top: 8px;">App Store</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 100 SAR</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function handleCredentialResponse(response) {
+            fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Google Sign-In failed.');
+                }
+            });
+        }
+
+        function triggerAdReward(duration) {
+            const btn = document.getElementById('watch-btn');
+            btn.disabled = true;
+            let timer = duration;
+
+            const countdown = setInterval(() => {
+                btn.innerText = `Please wait ${timer} seconds...`;
+                timer--;
+
+                if(timer < 0) {
+                    clearInterval(countdown);
+                    btn.innerText = "Adding reward...";
+
+                    fetch('/api/ads/reward', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            document.getElementById('pts').innerText = data.new_points;
+                            document.getElementById('sar').innerText = data.new_balance.toFixed(2);
+                            btn.innerText = "Completed (+50 Points!)";
+                        }
+                    });
+                }
+            }, 1000);
+        }
+
+        function requestWithdraw(method, minAmount) {
+            const currentBalance = parseFloat(document.getElementById('sar').innerText);
+            
+            if(currentBalance < minAmount) {
+                alert(`Minimum withdrawal for ${method} is ${minAmount} SAR.`);
+                return;
+            }
+
+            const accountDetails = prompt(`Enter your account or phone number for ${method}:`);
+            if(!accountDetails) return;
+
+            fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount_sar: minAmount,
+                    method: method,
+                    account_info: accountDetails
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('pts').innerText = data.new_points;
+                    document.getElementById('sar').innerText = data.new_balance.toFixed(2);
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
