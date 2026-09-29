@@ -64,17 +64,6 @@
             text-align: center;
         }
 
-        .ad-container {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 250px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
         .btn {
             background: var(--accent-color);
             color: #fff;
@@ -196,7 +185,7 @@
         <div class="logo"><i class="fa-solid fa-play-circle"></i> Watch & Earn</div>
         <div class="user-stats">
             <div class="stat-badge"><i class="fa-solid fa-coins" style="color: #f59e0b;"></i> <span id="pts">{% if user %}{{ user.points }}{% else %}0{% endif %}</span> Pts</div>
-            <div class="stat-badge"><i class="fa-solid fa-wallet" style="color: var(--success-color);"></i> <span id="sar">{% if user %}{{ user.balance_sar }}{% else %}0.00{% endif %}</span> SAR</div>
+            <div class="stat-badge"><i class="fa-solid fa-wallet" style="color: var(--success-color);"></i> <span id="sar">{% if user %}{{ "%.2f"|format(user.balance_sar) }}{% else %}0.00{% endif %}</span> SAR</div>
         </div>
     </header>
 
@@ -346,6 +335,9 @@
                             document.getElementById('pts').innerText = data.new_points;
                             document.getElementById('sar').innerText = data.new_balance.toFixed(2);
                             btn.innerText = "Completed (+50 Points!)";
+                        } else {
+                            alert(data.message);
+                            btn.innerText = "Watch Video (+50 Points)";
                         }
                     });
                 }
