@@ -192,7 +192,10 @@ def ai_guide():
 
     payload = {
         "contents": [
-            {"parts": [{"text": system_prompt + "\nسؤال الزائر: " + user_question}]}
+            {
+                "role": "user",
+                "parts": [{"text": f"{system_prompt}\n\nسؤال الزائر: {user_question}"}]
+            }
         ]
     }
 
@@ -202,13 +205,17 @@ def ai_guide():
         )
         res_data = res.json()
 
+        # إذا نجحت الاستجابة من جوجل
         if "candidates" in res_data and len(res_data["candidates"]) > 0:
             reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
             return jsonify({"success": True, "reply": reply})
         else:
+            # طباعة وتفصيل الخطأ القادم من جوجل بدقة
+            error_msg = res_data.get("error", {}).get("message", "استجابة غير متوقعة من API")
+            print("Gemini API Error Detail:", res_data)
             return jsonify({
                 "success": False,
-                "message": "عذراً، لم أستطع معالجة الإجابة حالياً.",
+                "message": f"خطأ من سيرفر الذكاء الاصطناعي: {error_msg}",
             })
 
     except Exception as e:
