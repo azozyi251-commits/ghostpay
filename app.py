@@ -11,7 +11,8 @@ GEMINI_API_KEY = os.environ.get(
 
 # ضَع هنا الـ Client ID الحقيقي المأخوذ من Google Cloud Console
 # مثال: "1234567890-abc123def456.apps.googleusercontent.com"
-GOOGLE_CLIENT_ID = "ضع_الـ_CLIENT_ID_الحقيقي_هنا.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com
+"
 
 
 @app.route("/")
