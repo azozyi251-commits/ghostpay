@@ -4,10 +4,9 @@ import requests
 
 app = Flask(__name__)
 
-# ✅ التصحيح: البحث عن اسم المتغير "GEMINI_API_KEY"
+# ✅ كودك الصحيح والمضبوط 100%
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
-# Google Client ID الخاص بك
 GOOGLE_CLIENT_ID = (
     "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 )
@@ -15,13 +14,10 @@ GOOGLE_CLIENT_ID = (
 
 @app.route("/")
 def index():
-    user_data = None  # بيانات المستخدم إذا كان مسجلاً دخول
+    user_data = None
     return render_template(
         "index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID
     )
-
-
-# --- API المسارات الخاصة بالموقع ---
 
 
 @app.route("/api/auth/google", methods=["POST"])
@@ -44,7 +40,6 @@ def withdraw():
     })
 
 
-# --- مسار المساعد الذكي (Ghost AI Guide) ---
 @app.route("/api/ai-guide", methods=["POST"])
 def ai_guide():
     data = request.get_json()
