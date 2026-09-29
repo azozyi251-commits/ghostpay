@@ -6,9 +6,11 @@
     <title>Watch & Earn | Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Google Identity Services SDK -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+    <!-- Ad Network Scripts -->
     <script src="https://pl31555306.profitableratecpmnetwork.com/73/12/cf/7312cf84dc845c83e9a929012e3a33ff.js"></script>
     <script src="https://pl31555305.profitableratecpmnetwork.com/d8/05/c0/d805c039b056089f891b88610592fdb6.js"></script>
 
@@ -206,7 +208,9 @@
             <p style="color: var(--text-muted); margin: 10px 0 20px;">Sign in with Google to save your balance and points securely.</p>
             <div id="g_id_onload"
                  data-client_id="{{ google_client_id }}"
-                 data-callback="handleCredentialResponse">
+                 data-callback="handleCredentialResponse"
+                 data-auto_select="false"
+                 data-use_fedcm_for_prompt="false">
             </div>
             <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue"></div>
         </div>
@@ -282,7 +286,6 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         }
 
-        // استدعاء المساعد الذكي عبر مسار السيرفر الآمن (Backend)
         async function askGhostGuide(userQuestion) {
             const responseBox = document.getElementById("ai-response-box");
             responseBox.innerText = "جاري التحليل واستخراج الإجابة... ⚡️";
