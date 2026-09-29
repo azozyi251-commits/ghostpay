@@ -4,9 +4,10 @@ import requests
 
 app = Flask(__name__)
 
-# ✅ كودك الصحيح والمضبوط 100%
+# جلب مفتاح Gemini من متغيرات البيئة بآمان
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
+# Google Client ID الخاص بك
 GOOGLE_CLIENT_ID = (
     "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 )
@@ -18,6 +19,9 @@ def index():
     return render_template(
         "index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID
     )
+
+
+# --- API المسارات الخاصة بالموقع ---
 
 
 @app.route("/api/auth/google", methods=["POST"])
@@ -40,9 +44,10 @@ def withdraw():
     })
 
 
+# --- مسار المساعد الذكي (Ghost AI Guide) ---
 @app.route("/api/ai-guide", methods=["POST"])
 def ai_guide():
-    data = request.get_json()
+    data = request.get_json() or {}
     user_question = data.get("question", "")
 
     if not GEMINI_API_KEY:
@@ -85,4 +90,6 @@ def ai_guide():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # تعديل مهم لتوافق Render مع المنافذ الديناميكية
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
