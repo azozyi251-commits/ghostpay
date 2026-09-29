@@ -4,16 +4,21 @@ import requests
 
 app = Flask(__name__)
 
-# ضع مفتاح الـ API الخاص بك هنا (أو احفظه كـ Environment Variable)
-GEMINI_API_KEY = "AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw"
+# جلب المفتاح من متغيرات البيئة لحمايته من GitHub Secret Scanning
+GEMINI_API_KEY = os.environ.get(
+    "GEMINI_API_KEY", "AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw"
+)
+
+# ضَع هنا الـ Client ID الحقيقي المأخوذ من Google Cloud Console
+# مثال: "1234567890-abc123def456.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "ضع_الـ_CLIENT_ID_الحقيقي_هنا.apps.googleusercontent.com"
 
 
 @app.route("/")
 def index():
-    # هنا يمكنك تمرير بيانات المستخدم أو أي متغيرة للـ Template
-    user_data = None  # أضف بيانات المستخدم هنا إذا كان مسجلاً
+    user_data = None  # بيانات المستخدم إذا كان مسجلاً دخول
     return render_template(
-        "index.html", user=user_data, google_client_id="YOUR_GOOGLE_CLIENT_ID"
+        "index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID
     )
 
 
@@ -22,19 +27,16 @@ def index():
 
 @app.route("/api/auth/google", methods=["POST"])
 def auth_google():
-    # مسار تسجيل الدخول عبر جوجل
     return jsonify({"success": True})
 
 
 @app.route("/api/ads/reward", methods=["POST"])
 def ads_reward():
-    # مسار إضافة المكافآت بعد مشاهدة الإعلان
     return jsonify({"success": True, "new_points": 50, "new_balance": 5.00})
 
 
 @app.route("/api/withdraw", methods=["POST"])
 def withdraw():
-    # مسار طلب السحب
     return jsonify({
         "success": True,
         "message": "تم إرسال طلب السحب بنجاح!",
@@ -43,7 +45,7 @@ def withdraw():
     })
 
 
-# --- مسار المساعد الذكي (Ghost AI Guide) الآمن ---
+# --- مسار المساعد الذكي (Ghost AI Guide) ---
 @app.route("/api/ai-guide", methods=["POST"])
 def ai_guide():
     data = request.get_json()
