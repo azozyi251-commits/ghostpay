@@ -4,10 +4,10 @@ import requests
 
 app = Flask(__name__)
 
-# جلب مفتاح Gemini من متغيرات البيئة بآمان وبدون قيم مكشوفة
-GEMINI_API_KEY = os.environ.get("AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw", "")
+# ✅ التصحيح: البحث عن اسم المتغير "GEMINI_API_KEY"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
-# Google Client ID الخاص بك (تم تعديل السطر وإزالة الانكسار)
+# Google Client ID الخاص بك
 GOOGLE_CLIENT_ID = (
     "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 )
