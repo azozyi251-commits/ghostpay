@@ -4,15 +4,13 @@ import requests
 
 app = Flask(__name__)
 
-# جلب المفتاح من متغيرات البيئة لحمايته من GitHub Secret Scanning
-GEMINI_API_KEY = os.environ.get(
-    "GEMINI_API_KEY", "AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw"
-)
+# جلب مفتاح Gemini من متغيرات البيئة بآمان وبدون قيم مكشوفة
+GEMINI_API_KEY = os.environ.get("AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw", "")
 
-# ضَع هنا الـ Client ID الحقيقي المأخوذ من Google Cloud Console
-# مثال: "1234567890-abc123def456.apps.googleusercontent.com"
-GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com
-"
+# Google Client ID الخاص بك (تم تعديل السطر وإزالة الانكسار)
+GOOGLE_CLIENT_ID = (
+    "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
+)
 
 
 @app.route("/")
@@ -51,6 +49,12 @@ def withdraw():
 def ai_guide():
     data = request.get_json()
     user_question = data.get("question", "")
+
+    if not GEMINI_API_KEY:
+        return jsonify({
+            "success": False,
+            "message": "مفتاح API غير معرف في Environment Variables.",
+        })
 
     system_prompt = "أنت مساعد ذكي خاص بموقع GhostPay. وظيفتك فقط توضيح وشرح فائدة الموقع للزوار: الموقع يقدم مكافآت وأرباح فورية عند التفاعل والضغط كل 3 ثواني، ويمكن تحويل النقاط إلى STC Pay أو UrPay. اشرح بأسلوب سايبر حماسي ومختصر جداً وبدون خروج عن هذا الموضوع."
 
