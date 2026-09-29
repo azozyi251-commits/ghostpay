@@ -5,7 +5,7 @@ import requests
 app = Flask(__name__)
 
 # ضع مفتاح الـ API الخاص بك هنا (أو احفظه كـ Environment Variable)
-GEMINI_API_KEY = "ضع_مفتاح_الـ_API_هنا"
+GEMINI_API_KEY = "AQ.Ab8RN6JmCkC38JnNOzZdLdRv9pHMqWVubYs2JBm3TS8SXAKCzw"
 
 
 @app.route("/")
