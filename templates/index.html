@@ -1,11 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostPay Platform</title>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #111827;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        .btn {
+            background: #00ffcc;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .fireplace-box {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>👑 GhostPay Platform</h1>
+    
+    {% if user %}
+        <h2>مرحباً بك: {{ user.name }}</h2>
+        <p>النقاط: <span id="user-points">{{ user.points }}</span> | الرصيد: <span id="user-balance">{{ "%.2f"|format(user.balance_sar) }}</span> ريال</p>
+        <button class="btn" onclick="claimReward()">🔥 جمع الأرباح (اضغط هنا)</button>
+        <br><br>
+        <a href="/logout" style="color: #ff4d4d;">تسجيل الخروج</a>
+    {% else %}
+        <h2>سجل دخولك لبدء كسب الأرباح</h2>
+        <p>استخدم حساب Google لتسجيل الدخول الفوري</p>
+    {% endif %}
+
+    <!-- فيديو النار للشتاء -->
+    <div class="fireplace-box">
+        <iframe width="100%" height="315" src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1" frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
+
 <script>
 /* GhostPay Obfuscated Core Script - Protected */
 (function(_0x5a1e,_0x3b92){var _0x1c4a=function(_0x2d8f){while(--_0x2d8f){_0x5a1e['push'](_0x5a1e['shift']());}};_0x1c4a(++_0x3b92);}(_0x1122,0x1b4));var _0x3e11=function(_0x5a1e,_0x3b92){_0x5a1e=_0x5a1e-0x0;var _0x1c4a=_0x1122[_0x5a1e];return _0x1c4a;};var _0x1122=['\x2f\x61\x70\x69\x2f\x61\x64\x73\x2f\x72\x65\x77\x61\x72\x64','\x50\x4f\x53\x54','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x53\x75\x63\x63\x65\x73\x73','\x65\x72\x72\x6f\x72','\x2f\x61\x70\x69\x2f\x77\x69\x74\x68\x64\x72\x61\x77'];
 
-// منع زر الفأرة الأيمن وقائمة الفحص Inspect Element
 document.addEventListener('contextmenu', function(_0x1e2f){ _0x1e2f.preventDefault(); });
 
-// منع اختصارات لوحة التحكم الخاصة بالمطورين (F12 / Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U)
 document.onkeydown = function(e) {
     if (e.keyCode == 123 || 
        (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
@@ -14,7 +74,6 @@ document.onkeydown = function(e) {
     }
 };
 
-// دالة تفاعل الإعلانات والمكافآت
 async function claimReward() {
     try {
         const response = await fetch('/api/ads/reward', {
@@ -33,24 +92,6 @@ async function claimReward() {
         alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
     }
 }
-
-// دالة طلب السحب
-async function submitWithdrawal(method, accountInfo, amount) {
-    try {
-        const response = await fetch('/api/withdraw', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ method: method, account_info: accountInfo, amount_sar: amount })
-        });
-        const data = await response.json();
-        if (data.success) {
-            alert(data.message);
-            location.reload();
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        alert('حدث خطأ أثناء معالجة طلب السحب');
-    }
-}
 </script>
+</body>
+</html>
