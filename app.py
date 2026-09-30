@@ -5,7 +5,6 @@ from psycopg2.extras import RealDictCursor
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
-import requests
 
 app = Flask(__name__, template_folder='.')
 
@@ -19,17 +18,14 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "")
 GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 
 USER_LAST_REWARD_TIME = {}
-USER_LAST_AI_TIME = {}
 
 def get_db_connection():
     if not DATABASE_URL:
+        print("Warning: DATABASE_URL is not set!")
         return None
     try:
         url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-        if "?" not in url:
-            url += "?sslmode=require"
-        else:
-            url += "&sslmode=require"
+        # فتح الاتصال بأمان بدون فرض sslmode إذا كان الاتصال داخلياً على Render
         return psycopg2.connect(url)
     except Exception as e:
         print("Database Connection Error:", e)
@@ -56,7 +52,11 @@ def init_db():
         except Exception as e:
             print("Database Init Error:", e)
 
-init_db()
+# محاولة تهيئة الجدول بأمان بدون إيقاف السيرفر
+try:
+    init_db()
+except Exception as e:
+    print("Init DB skipped/failed:", e)
 
 def get_user(google_id):
     conn = get_db_connection()
@@ -114,7 +114,9 @@ def index():
         if "user_id" in session:
             user_data = get_user(session["user_id"])
     except Exception as e:
-        print("Index Route Error:", e)
+        print("Session/User Fetch Error in Index:", e)
+    
+    # العرض المستمر والدائم للـ index.html دونانهيار
     return render_template("index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID)
 
 @app.route("/logout")
@@ -141,7 +143,7 @@ def auth_google():
         if user:
             session["user_id"] = user["google_id"]
             return jsonify({"success": True})
-        return jsonify({"success": False, "message": "Failed to handle user database record"})
+        return jsonify({"success": False, "message": "Failed to handle user record"})
     except Exception as e:
         print("Auth error:", e)
         return jsonify({"success": False, "message": "Invalid token"})
