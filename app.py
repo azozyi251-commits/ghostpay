@@ -6,7 +6,9 @@ from flask import Flask, jsonify, redirect, render_template, request, session, u
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
-app = Flask(__name__, template_folder='.')
+# تحديد المسار المطلق للمشروع لضمان العثور على index.html
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, template_folder=BASE_DIR, static_folder=BASE_DIR)
 
 app.secret_key = os.environ.get("SECRET_KEY", "ghostpay_super_secret_key_2026")
 app.config['SESSION_COOKIE_HTTPONLY'] = True
@@ -25,7 +27,7 @@ def get_db_connection():
         return None
     try:
         url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-        return psycopg2.connect(url)
+        return psycopg2.connect(url, connect_timeout=5)
     except Exception as e:
         print("Database Connection Error:", e)
         return None
