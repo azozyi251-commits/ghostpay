@@ -60,7 +60,7 @@
     
     {% if user %}
         <h2>مرحباً بك: {{ user.name }}</h2>
-        <p>النقاط: <span id="user-points">{{ user.points }}</span> | الرصيد: <span id="user-balance">{{ "%.2f"|format(user.balance_sar) }}</span> ريال</p>
+        <p>النقاط: <span id="user-points">{{ user.points if user.points else 0 }}</span> | الرصيد: <span id="user-balance">{{ user.balance_sar if user.balance_sar else 0.0 }}</span> ريال</p>
         <button class="btn" onclick="claimReward()">🔥 جمع الأرباح (اضغط هنا)</button>
         
         <div class="withdraw-box">
