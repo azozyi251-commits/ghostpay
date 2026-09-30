@@ -99,10 +99,8 @@
 </div>
 
 <script>
-/* GhostPay Obfuscated Core Script - Protected */
-(function(_0x5a1e,_0x3b92){var _0x1c4a=function(_0x2d8f){while(--_0x2d8f){_0x5a1e['push'](_0x5a1e['shift']());}};_0x1c4a(++_0x3b92);}(_0x1122,0x1b4));var _0x3e11=function(_0x5a1e,_0x3b92){_0x5a1e=_0x5a1e-0x0;var _0x1c4a=_0x1122[_0x5a1e];return _0x1c4a;};var _0x1122=['\x2f\x61\x70\x69\x2f\x61\x64\x73\x2f\x72\x65\x77\x61\x72\x64','\x50\x4f\x53\x54','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x53\x75\x63\x63\x65\x73\x73','\x65\x72\x72\x6f\x72','\x2f\x61\x70\x69\x2f\x77\x69\x74\x68\x64\x72\x61\x77'];
-
-document.addEventListener('contextmenu', function(_0x1e2f){ _0x1e2f.preventDefault(); });
+/* GhostPay Core Script */
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
 
 document.onkeydown = function(e) {
     if (e.keyCode == 123 || 
@@ -131,7 +129,8 @@ async function handleCredentialResponse(response) {
 }
 
 async function claimReward() {
-    // 1. فتح رابط Adsterra المباشر في تبويب جديد لتسجيل الأرباح
+    // 1. فتح رابط Adsterra المباشر (Smartlink) في تبويب جديد لتسجيل الأرباح
+    // استبدل الرابط أدناه برابط الـ Smartlink الخاص بك فور قبوله
     window.open('https://www.profitableratecpmnetwork.com/z4eea3st?key=3492fa8e73a265c117db7f10eb440b41');
 
     // 2. إرسال طلب احتساب النقاط والمكافأة للسيرفر
@@ -143,8 +142,8 @@ async function claimReward() {
         const data = await response.json();
         if (data.success) {
             if(document.getElementById('user-points')) document.getElementById('user-points').innerText = data.new_points;
-            if(document.getElementById('user-balance')) document.getElementById('user-balance').innerText = data.new_balance.toFixed(2);
-            alert('تم مشاهدة الإعلان وإضافة 50 نقطة و 0.50 ريال لرصيدك بنجاح!');
+            if(document.getElementById('user-balance')) document.getElementById('user-balance').innerText = data.new_balance.toFixed(4);
+            alert('تم مشاهدة الإعلان وإضافة مكافأتك لرصيدك بنجاح!');
         } else {
             alert(data.message || 'حدث خطأ أثناء إضافة المكافأة');
         }
@@ -185,7 +184,7 @@ async function submitWithdrawal(method, accountInfo, amount) {
 }
 </script>
 
-<!-- Adsterra Social Bar / Popunder Script Integration -->
+<!-- Adsterra Social Bar Script Integration -->
 <script type='text/javascript' src='//pl31454806.effectivegatecpm.com/31/45/48/31454806.js'></script>
 
 </body>
