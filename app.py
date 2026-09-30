@@ -6,9 +6,8 @@ from flask import Flask, jsonify, redirect, render_template, request, session, u
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
-# تحديد المسار المطلق للمشروع لضمان العثور على index.html
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-app = Flask(__name__, template_folder=BASE_DIR, static_folder=BASE_DIR)
+# إنشاء تطبيق Flask بالهيكلة القياسية لمجلد templates
+app = Flask(__name__)
 
 app.secret_key = os.environ.get("SECRET_KEY", "ghostpay_super_secret_key_2026")
 app.config['SESSION_COOKIE_HTTPONLY'] = True
