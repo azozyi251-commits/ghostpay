@@ -1,108 +1,103 @@
 import os
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 import requests
 
-# إعلان تطبيق Flask الرئيسي
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "ghostpay_super_secret_key_2026")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GOOGLE_CLIENT_ID = (
-    "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
+GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 
-DB_FILE = "ghostpay.db"
-
+def get_db_connection():
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL variable is missing in Render!")
+    # إصلاح بادئة الرابط لتتوافق مع psycopg2
+    url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    return psycopg2.connect(url)
 
 def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            google_id TEXT PRIMARY KEY,
-            email TEXT NOT NULL,
-            name TEXT NOT NULL,
-            points INTEGER DEFAULT 0,
-            balance_sar REAL DEFAULT 0.0
-        )
-    """)
-    conn.commit()
-    conn.close()
-
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                google_id TEXT PRIMARY KEY,
+                email TEXT NOT NULL,
+                name TEXT NOT NULL,
+                points INTEGER DEFAULT 0,
+                balance_sar REAL DEFAULT 0.0
+            );
+        """)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("PostgreSQL Initialized Successfully.")
+    except Exception as e:
+        print("Database Init Error:", e)
 
 init_db()
 
-
 def get_user(google_id):
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT google_id, email, name, points, balance_sar FROM users WHERE google_id = ?",
-        (google_id,),
-    )
-    row = cursor.fetchone()
-    conn.close()
-    if row:
-        return {
-            "google_id": row[0],
-            "email": row[1],
-            "name": row[2],
-            "points": row[3],
-            "balance_sar": row[4],
-        }
-    return None
-
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("SELECT google_id, email, name, points, balance_sar FROM users WHERE google_id = %s;", (google_id,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return user
+    except Exception as e:
+        print("Get User Error:", e)
+        return None
 
 def create_or_get_user(google_id, email, name):
     user = get_user(google_id)
     if not user:
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (?, ?, ?, 0, 0.0)",
-            (google_id, email, name),
-        )
-        conn.commit()
-        conn.close()
-        return {
-            "google_id": google_id,
-            "email": email,
-            "name": name,
-            "points": 0,
-            "balance_sar": 0.0,
-        }
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (%s, %s, %s, 0, 0.0);",
+                (google_id, email, name)
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return {"google_id": google_id, "email": email, "name": name, "points": 0, "balance_sar": 0.0}
+        except Exception as e:
+            print("Create User Error:", e)
     return user
 
-
 def update_user_balance(google_id, added_points, added_sar):
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE users SET points = points + ?, balance_sar = balance_sar + ? WHERE google_id = ?",
-        (added_points, added_sar, google_id),
-    )
-    conn.commit()
-    conn.close()
-
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE users SET points = points + %s, balance_sar = balance_sar + %s WHERE google_id = %s;",
+            (added_points, added_sar, google_id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print("Update Balance Error:", e)
 
 @app.route("/")
 def index():
     user_data = None
     if "user_id" in session:
         user_data = get_user(session["user_id"])
-    return render_template(
-        "index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID
-    )
-
+    return render_template("index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID)
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
-
 
 @app.route("/api/auth/google", methods=["POST"])
 def auth_google():
@@ -126,13 +121,10 @@ def auth_google():
         print("Auth error:", e)
         return jsonify({"success": False, "message": "Invalid token"})
 
-
 @app.route("/api/ads/reward", methods=["POST"])
 def ads_reward():
     if "user_id" not in session:
-        return jsonify(
-            {"success": False, "message": "يرجى تسجيل الدخول أولاً لحفظ نقاطك"}
-        )
+        return jsonify({"success": False, "message": "يرجى تسجيل الدخول أولاً لحفظ نقاطك"})
 
     google_id = session["user_id"]
     update_user_balance(google_id, added_points=50, added_sar=0.50)
@@ -141,9 +133,8 @@ def ads_reward():
     return jsonify({
         "success": True,
         "new_points": updated_user["points"],
-        "new_balance": updated_user["balance_sar"],
+        "new_balance": float(updated_user["balance_sar"])
     })
-
 
 @app.route("/api/withdraw", methods=["POST"])
 def withdraw():
@@ -158,7 +149,7 @@ def withdraw():
     google_id = session["user_id"]
     user = get_user(google_id)
 
-    if user["balance_sar"] < amount_sar:
+    if float(user["balance_sar"]) < amount_sar:
         return jsonify({"success": False, "message": "رصيدك غير كافي للسحب"})
 
     deduct_points = int(amount_sar * 100)
@@ -169,9 +160,8 @@ def withdraw():
         "success": True,
         "message": f"تم استلام طلب سحب {amount_sar} ريال عبر {method} بنجاح! سيتم التحويل إلى ({account_info}) قريباً.",
         "new_points": updated_user["points"],
-        "new_balance": updated_user["balance_sar"],
+        "new_balance": float(updated_user["balance_sar"])
     })
-
 
 @app.route("/api/ai-guide", methods=["POST"])
 def ai_guide():
@@ -181,13 +171,12 @@ def ai_guide():
     if not GEMINI_API_KEY:
         return jsonify({
             "success": False,
-            "message": "مفتاح API غير معرف في Environment Variables.",
+            "message": "مفتاح API غير معرف في Environment Variables."
         })
 
     system_prompt = "أنت مساعد ذكي خاص بموقع GhostPay. وظيفتك فقط توضيح وشرح فائدة الموقع للزوار: الموقع يقدم مكافآت وأرباح فورية عند التفاعل والضغط كل 3 ثواني، ويمكن تحويل النقاط إلى STC Pay أو UrPay. اشرح بأسلوب سايبر حماسي ومختصر جداً وبدون خروج عن هذا الموضوع."
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={GEMINI_API_KEY}"
-
+    models_to_try = ["gemini-3.8-flash", "gemini-1.5-flash"]
     payload = {
         "contents": [
             {
@@ -197,30 +186,22 @@ def ai_guide():
         ]
     }
 
-    try:
-        res = requests.post(
-            url, json=payload, headers={"Content-Type": "application/json"}
-        )
-        res_data = res.json()
+    for model in models_to_try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
+        try:
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
+            res_data = res.json()
 
-        if "candidates" in res_data and len(res_data["candidates"]) > 0:
-            reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
-            return jsonify({"success": True, "reply": reply})
-        else:
-            error_msg = res_data.get("error", {}).get("message", "استجابة غير متوقعة من API")
-            print("Gemini API Error Detail:", res_data)
-            return jsonify({
-                "success": False,
-                "message": f"خطأ من سيرفر الذكاء الاصطناعي: {error_msg}",
-            })
+            if "candidates" in res_data and len(res_data["candidates"]) > 0:
+                reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                return jsonify({"success": True, "reply": reply})
+        except Exception as e:
+            print(f"Error trying model {model}:", e)
 
-    except Exception as e:
-        print("Error in AI Guide:", e)
-        return jsonify({
-            "success": False,
-            "message": "تعذر الاتصال بالذكاء الاصطناعي.",
-        })
-
+    return jsonify({
+        "success": False,
+        "message": "السيرفر يواجه ضغطاً عالياً حالياً، يرجى المحاولة بعد بضع ثوانٍ."
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
