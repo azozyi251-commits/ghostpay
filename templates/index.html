@@ -89,7 +89,12 @@
     {% endif %}
 
     <div class="fireplace-box">
-        <iframe width="100%" height="315" src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1" frameborder="0" allowfullscreen></iframe>
+        <iframe width="100%" height="315" 
+                src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1&playlist=L_LUpnjgPso" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+        </iframe>
     </div>
 </div>
 
@@ -126,6 +131,10 @@ async function handleCredentialResponse(response) {
 }
 
 async function claimReward() {
+    // 1. فتح رابط Adsterra المباشر في تبويب جديد لتسجيل الأرباح
+    window.open('https://www.profitableratecpmnetwork.com/z4eea3st?key=3492fa8e73a265c117db7f10eb440b41');
+
+    // 2. إرسال طلب احتساب النقاط والمكافأة للسيرفر
     try {
         const response = await fetch('/api/ads/reward', {
             method: 'POST',
@@ -135,7 +144,7 @@ async function claimReward() {
         if (data.success) {
             if(document.getElementById('user-points')) document.getElementById('user-points').innerText = data.new_points;
             if(document.getElementById('user-balance')) document.getElementById('user-balance').innerText = data.new_balance.toFixed(2);
-            alert('تمت إضافة 50 نقطة و 0.50 ريال لرصيدك بنجاح!');
+            alert('تم مشاهدة الإعلان وإضافة 50 نقطة و 0.50 ريال لرصيدك بنجاح!');
         } else {
             alert(data.message || 'حدث خطأ أثناء إضافة المكافأة');
         }
@@ -175,5 +184,9 @@ async function submitWithdrawal(method, accountInfo, amount) {
     }
 }
 </script>
+
+<!-- Adsterra Social Bar / Popunder Script Integration -->
+<script type='text/javascript' src='//pl31454806.effectivegatecpm.com/31/45/48/31454806.js'></script>
+
 </body>
 </html>
