@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GhostPay Platform</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body {
             background-color: #0b0f19;
@@ -31,6 +32,20 @@
             cursor: pointer;
             margin-top: 15px;
         }
+        .withdraw-box {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        input, select {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: white;
+        }
         .fireplace-box {
             margin-top: 20px;
             border-radius: 10px;
@@ -47,14 +62,32 @@
         <h2>مرحباً بك: {{ user.name }}</h2>
         <p>النقاط: <span id="user-points">{{ user.points }}</span> | الرصيد: <span id="user-balance">{{ "%.2f"|format(user.balance_sar) }}</span> ريال</p>
         <button class="btn" onclick="claimReward()">🔥 جمع الأرباح (اضغط هنا)</button>
+        
+        <div class="withdraw-box">
+            <h3>طلب سحب الأرباح</h3>
+            <select id="w-method">
+                <option value="STC Pay">STC Pay</option>
+                <option value="UrPay">UrPay</option>
+            </select>
+            <input type="text" id="w-account" placeholder="رقم الجوال / المحفظة">
+            <input type="number" id="w-amount" placeholder="المبلغ بالريال" step="0.5">
+            <button class="btn" onclick="handleWithdraw()">سحب الآن</button>
+        </div>
+
         <br><br>
         <a href="/logout" style="color: #ff4d4d;">تسجيل الخروج</a>
     {% else %}
         <h2>سجل دخولك لبدء كسب الأرباح</h2>
         <p>استخدم حساب Google لتسجيل الدخول الفوري</p>
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+            <div id="g_id_onload"
+                 data-client_id="{{ google_client_id }}"
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+        </div>
     {% endif %}
 
-    <!-- فيديو النار للشتاء -->
     <div class="fireplace-box">
         <iframe width="100%" height="315" src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1" frameborder="0" allowfullscreen></iframe>
     </div>
@@ -74,6 +107,24 @@ document.onkeydown = function(e) {
     }
 };
 
+async function handleCredentialResponse(response) {
+    try {
+        const res = await fetch('/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: response.credential })
+        });
+        const data = await res.json();
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message || 'فشل تسجيل الدخول');
+        }
+    } catch(e) {
+        alert('حدث خطأ أثناء تسجيل الدخول');
+    }
+}
+
 async function claimReward() {
     try {
         const response = await fetch('/api/ads/reward', {
@@ -90,6 +141,37 @@ async function claimReward() {
         }
     } catch (err) {
         alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
+    }
+}
+
+async function handleWithdraw() {
+    const method = document.getElementById('w-method').value;
+    const accountInfo = document.getElementById('w-account').value;
+    const amount = document.getElementById('w-amount').value;
+    
+    if(!accountInfo || !amount) {
+        alert('يرجى كتابة جميع البيانات بشكل صحيح');
+        return;
+    }
+    await submitWithdrawal(method, accountInfo, amount);
+}
+
+async function submitWithdrawal(method, accountInfo, amount) {
+    try {
+        const response = await fetch('/api/withdraw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ method: method, account_info: accountInfo, amount_sar: amount })
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    } catch (err) {
+        alert('حدث خطأ أثناء معالجة طلب السحب');
     }
 }
 </script>
