@@ -23,41 +23,46 @@ USER_LAST_AI_TIME = {}
 
 def get_db_connection():
     if not DATABASE_URL:
-        raise ValueError("DATABASE_URL variable is missing in Render!")
-    
-    url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    if "?" not in url:
-        url += "?sslmode=require"
-    else:
-        url += "&sslmode=require"
-        
-    return psycopg2.connect(url)
+        return None
+    try:
+        url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        if "?" not in url:
+            url += "?sslmode=require"
+        else:
+            url += "&sslmode=require"
+        return psycopg2.connect(url)
+    except Exception as e:
+        print("Database Connection Error:", e)
+        return None
 
 def init_db():
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                google_id TEXT PRIMARY KEY,
-                email TEXT NOT NULL,
-                name TEXT NOT NULL,
-                points INTEGER DEFAULT 0,
-                balance_sar REAL DEFAULT 0.0
-            );
-        """)
-        conn.commit()
-        cursor.close()
-        conn.close()
-        print("PostgreSQL Initialized Successfully.")
-    except Exception as e:
-        print("Database Init Error:", e)
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    google_id TEXT PRIMARY KEY,
+                    email TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    points INTEGER DEFAULT 0,
+                    balance_sar REAL DEFAULT 0.0
+                );
+            """)
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print("PostgreSQL Initialized Successfully.")
+        except Exception as e:
+            print("Database Init Error:", e)
 
 init_db()
 
 def get_user(google_id):
+    conn = get_db_connection()
+    if not conn:
+        return None
     try:
-        conn = get_db_connection()
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute("SELECT google_id, email, name, points, balance_sar FROM users WHERE google_id = %s;", (google_id,))
         user = cursor.fetchone()
@@ -71,40 +76,45 @@ def get_user(google_id):
 def create_or_get_user(google_id, email, name):
     user = get_user(google_id)
     if not user:
+        conn = get_db_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (%s, %s, %s, 0, 0.0);",
+                    (google_id, email, name)
+                )
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return {"google_id": google_id, "email": email, "name": name, "points": 0, "balance_sar": 0.0}
+            except Exception as e:
+                print("Create User Error:", e)
+    return user
+
+def update_user_balance(google_id, added_points, added_sar):
+    conn = get_db_connection()
+    if conn:
         try:
-            conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (%s, %s, %s, 0, 0.0);",
-                (google_id, email, name)
+                "UPDATE users SET points = points + %s, balance_sar = balance_sar + %s WHERE google_id = %s;",
+                (added_points, added_sar, google_id)
             )
             conn.commit()
             cursor.close()
             conn.close()
-            return {"google_id": google_id, "email": email, "name": name, "points": 0, "balance_sar": 0.0}
         except Exception as e:
-            print("Create User Error:", e)
-    return user
-
-def update_user_balance(google_id, added_points, added_sar):
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE users SET points = points + %s, balance_sar = balance_sar + %s WHERE google_id = %s;",
-            (added_points, added_sar, google_id)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-    except Exception as e:
-        print("Update Balance Error:", e)
+            print("Update Balance Error:", e)
 
 @app.route("/")
 def index():
     user_data = None
-    if "user_id" in session:
-        user_data = get_user(session["user_id"])
+    try:
+        if "user_id" in session:
+            user_data = get_user(session["user_id"])
+    except Exception as e:
+        print("Index Route Error:", e)
     return render_template("index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID)
 
 @app.route("/logout")
@@ -128,8 +138,10 @@ def auth_google():
         name = id_info.get("name", "User")
 
         user = create_or_get_user(google_id, email, name)
-        session["user_id"] = user["google_id"]
-        return jsonify({"success": True})
+        if user:
+            session["user_id"] = user["google_id"]
+            return jsonify({"success": True})
+        return jsonify({"success": False, "message": "Failed to handle user database record"})
     except Exception as e:
         print("Auth error:", e)
         return jsonify({"success": False, "message": "Invalid token"})
@@ -154,42 +166,11 @@ def ads_reward():
     update_user_balance(google_id, added_points=50, added_sar=0.50)
     updated_user = get_user(google_id)
 
-    return jsonify({
-        "success": True,
-        "new_points": updated_user["points"],
-        "new_balance": float(updated_user["balance_sar"])
-    })
-
-@app.route("/api/withdraw", methods=["POST"])
-def withdraw():
-    if "user_id" not in session:
-        return jsonify({"success": False, "message": "يرجى تسجيل الدخول أولاً"})
-
-    data = request.get_json() or {}
-    try:
-        amount_sar = float(data.get("amount_sar", 0))
-    except (ValueError, TypeError):
-        return jsonify({"success": False, "message": "المبلغ المدخل غير صالح"})
-
-    method = data.get("method", "").strip()
-    account_info = data.get("account_info", "").strip()
-
-    if amount_sar <= 0 or not method or not account_info:
-        return jsonify({"success": False, "message": "يرجى إدخال جميع بيانات السحب بشكل صحيح"})
-
-    google_id = session["user_id"]
-    user = get_user(google_id)
-
-    if not user or float(user["balance_sar"]) < amount_sar:
-        return jsonify({"success": False, "message": "رصيدك غير كافي للسحب"})
-
-    deduct_points = int(amount_sar * 100)
-    update_user_balance(google_id, added_points=-deduct_points, added_sar=-amount_sar)
-    updated_user = get_user(google_id)
+    if not updated_user:
+        return jsonify({"success": False, "message": "خطأ في الاتصال بقاعدة البيانات"})
 
     return jsonify({
         "success": True,
-        "message": f"تم استلام طلب سحب {amount_sar} ريال عبر {method} بنجاح! سيتم التحويل إلى ({account_info}) قريباً.",
         "new_points": updated_user["points"],
         "new_balance": float(updated_user["balance_sar"])
     })
