@@ -25,7 +25,6 @@ def get_db_connection():
         return None
     try:
         url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-        # فتح الاتصال بأمان بدون فرض sslmode إذا كان الاتصال داخلياً على Render
         return psycopg2.connect(url)
     except Exception as e:
         print("Database Connection Error:", e)
@@ -52,7 +51,6 @@ def init_db():
         except Exception as e:
             print("Database Init Error:", e)
 
-# محاولة تهيئة الجدول بأمان بدون إيقاف السيرفر
 try:
     init_db()
 except Exception as e:
@@ -98,7 +96,7 @@ def update_user_balance(google_id, added_points, added_sar):
         try:
             cursor = conn.cursor()
             cursor.execute(
-                "UPDATE users SET points = points + %s, balance_sar = balance_sar + %s WHERE google_id = %s;",
+                "UPDATE users SET points = points + %s, balance_sar = ROUND((balance_sar + %s)::numeric, 2) WHERE google_id = %s;",
                 (added_points, added_sar, google_id)
             )
             conn.commit()
@@ -116,7 +114,6 @@ def index():
     except Exception as e:
         print("Session/User Fetch Error in Index:", e)
     
-    # العرض المستمر والدائم للـ index.html دونانهيار
     return render_template("index.html", user=user_data, google_client_id=GOOGLE_CLIENT_ID)
 
 @app.route("/logout")
@@ -129,7 +126,7 @@ def auth_google():
     data = request.get_json() or {}
     token = data.get("token")
     if not token:
-        return jsonify({"success": False, "message": "No token provided"})
+        return jsonify({"success": False, "message": "لم يتم تقديم رمز التحقق"})
 
     try:
         id_info = id_token.verify_oauth2_token(
@@ -143,10 +140,10 @@ def auth_google():
         if user:
             session["user_id"] = user["google_id"]
             return jsonify({"success": True})
-        return jsonify({"success": False, "message": "Failed to handle user record"})
+        return jsonify({"success": False, "message": "فشل إنشاء أو استرجاع بيانات الحساب"})
     except Exception as e:
         print("Auth error:", e)
-        return jsonify({"success": False, "message": "Invalid token"})
+        return jsonify({"success": False, "message": "رمز دخول غير صالح"})
 
 @app.route("/api/ads/reward", methods=["POST"])
 def ads_reward():
@@ -160,7 +157,7 @@ def ads_reward():
     if current_time - last_time < 3.0:
         return jsonify({
             "success": False, 
-            "message": "تم اكتشاف طلبات سريعة جداً! يرجى الانتظار 3 ثوانٍ بين كل تفاعل."
+            "message": "تم اكتشاف تفاعل سريع! يرجى الانتظار 3 ثوانٍ بين كل ضغطة."
         }), 429
 
     USER_LAST_REWARD_TIME[google_id] = current_time
@@ -173,6 +170,40 @@ def ads_reward():
 
     return jsonify({
         "success": True,
+        "new_points": updated_user["points"],
+        "new_balance": float(updated_user["balance_sar"])
+    })
+
+@app.route("/api/withdraw", methods=["POST"])
+def withdraw():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "يرجى تسجيل الدخول أولاً"})
+
+    data = request.get_json() or {}
+    try:
+        amount_sar = float(data.get("amount_sar", 0))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "المبلغ المدخل غير صالح"})
+
+    method = data.get("method", "").strip()
+    account_info = data.get("account_info", "").strip()
+
+    if amount_sar <= 0 or not method or not account_info:
+        return jsonify({"success": False, "message": "يرجى إدخال جميع بيانات السحب بشكل صحيح"})
+
+    google_id = session["user_id"]
+    user = get_user(google_id)
+
+    if not user or float(user["balance_sar"]) < amount_sar:
+        return jsonify({"success": False, "message": "رصيدك الحالي غير كافٍ لهذا الطلب"})
+
+    deduct_points = int(amount_sar * 100)
+    update_user_balance(google_id, added_points=-deduct_points, added_sar=-amount_sar)
+    updated_user = get_user(google_id)
+
+    return jsonify({
+        "success": True,
+        "message": f"تم استلام طلب سحب {amount_sar} ريال عبر {method} بنجاح! وسيتم التحويل للحساب ({account_info}) قريباً.",
         "new_points": updated_user["points"],
         "new_balance": float(updated_user["balance_sar"])
     })
