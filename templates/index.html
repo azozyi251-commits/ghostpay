@@ -1,380 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch & Earn | Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Identity Services SDK -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+/* GhostPay Obfuscated Core Script - Protected */
+(function(_0x5a1e,_0x3b92){var _0x1c4a=function(_0x2d8f){while(--_0x2d8f){_0x5a1e['push'](_0x5a1e['shift']());}};_0x1c4a(++_0x3b92);}(_0x1122,0x1b4));var _0x3e11=function(_0x5a1e,_0x3b92){_0x5a1e=_0x5a1e-0x0;var _0x1c4a=_0x1122[_0x5a1e];return _0x1c4a;};var _0x1122=['\x2f\x61\x70\x69\x2f\x61\x64\x73\x2f\x72\x65\x77\x61\x72\x64','\x50\x4f\x53\x54','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x53\x75\x63\x63\x65\x73\x73','\x65\x72\x72\x6f\x72','\x2f\x61\x70\x69\x2f\x77\x69\x74\x68\x64\x72\x61\x77'];
 
-    <!-- Ad Network Scripts -->
-    <script src="https://pl31555306.profitableratecpmnetwork.com/73/12/cf/7312cf84dc845c83e9a929012e3a33ff.js"></script>
-    <script src="https://pl31555305.profitableratecpmnetwork.com/d8/05/c0/d805c039b056089f891b88610592fdb6.js"></script>
+// منع زر الفأرة الأيمن وقائمة الفحص Inspect Element
+document.addEventListener('contextmenu', function(_0x1e2f){ _0x1e2f.preventDefault(); });
 
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #6366f1;
-            --success-color: #10b981;
-            --stc-color: #4f008c;
-            --urpay-color: #0052cc;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
+// منع اختصارات لوحة التحكم الخاصة بالمطورين (F12 / Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U)
+document.onkeydown = function(e) {
+    if (e.keyCode == 123 || 
+       (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
+       (e.ctrlKey && e.keyCode == 85)) {
+        return false;
+    }
+};
+
+// دالة تفاعل الإعلانات والمكافآت
+async function claimReward() {
+    try {
+        const response = await fetch('/api/ads/reward', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (data.success) {
+            if(document.getElementById('user-points')) document.getElementById('user-points').innerText = data.new_points;
+            if(document.getElementById('user-balance')) document.getElementById('user-balance').innerText = data.new_balance.toFixed(2);
+            alert('تمت إضافة 50 نقطة و 0.50 ريال لرصيدك بنجاح!');
+        } else {
+            alert(data.message || 'حدث خطأ أثناء إضافة المكافأة');
         }
+    } catch (err) {
+        alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
+    }
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; position: relative; }
-
-        header {
-            background-color: rgba(30, 41, 59, 0.9);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
+// دالة طلب السحب
+async function submitWithdrawal(method, accountInfo, amount) {
+    try {
+        const response = await fetch('/api/withdraw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ method: method, account_info: accountInfo, amount_sar: amount })
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
         }
-
-        .logo { font-size: 1.4rem; font-weight: 800; color: var(--accent-color); display: flex; align-items: center; gap: 8px; }
-        .user-stats { display: flex; gap: 15px; align-items: center; }
-        
-        .stat-badge {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; padding-bottom: 100px; }
-
-        .auth-card, .watch-card, .withdraw-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .btn {
-            background: var(--accent-color);
-            color: #fff;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-
-        .btn:hover { opacity: 0.9; }
-        .btn:disabled { background: var(--border-color); cursor: not-allowed; }
-
-        .withdraw-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .withdraw-card {
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .withdraw-card:hover { border-color: var(--accent-color); }
-
-        /* --- Ghost AI Assistant Styles --- */
-        .ai-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            direction: rtl;
-        }
-
-        .ai-toggle-btn {
-            background: var(--accent-color);
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ai-box {
-            display: none;
-            width: 320px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .ai-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .ai-response {
-            background: var(--bg-color);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            min-height: 60px;
-            margin-bottom: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .ai-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .ai-btn {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--text-main);
-            border: 1px solid var(--accent-color);
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            text-align: right;
-            transition: 0.2s;
-        }
-
-        .ai-btn:hover {
-            background: var(--accent-color);
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo"><i class="fa-solid fa-play-circle"></i> Watch & Earn</div>
-        <div class="user-stats">
-            <div class="stat-badge"><i class="fa-solid fa-coins" style="color: #f59e0b;"></i> <span id="pts">{% if user %}{{ user.points }}{% else %}0{% endif %}</span> Pts</div>
-            <div class="stat-badge"><i class="fa-solid fa-wallet" style="color: var(--success-color);"></i> <span id="sar">{% if user %}{{ "%.2f"|format(user.balance_sar) }}{% else %}0.00{% endif %}</span> SAR</div>
-        </div>
-    </header>
-
-    <div class="container">
-        {% if not user %}
-        <!-- Google Sign In View -->
-        <div class="auth-card">
-            <h2>Welcome Back</h2>
-            <p style="color: var(--text-muted); margin: 10px 0 20px;">Sign in with Google to save your balance and points securely.</p>
-            <div id="g_id_onload"
-                 data-client_id="{{ google_client_id }}"
-                 data-callback="handleCredentialResponse"
-                 data-auto_select="false"
-                 data-use_fedcm_for_prompt="false">
-            </div>
-            <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue"></div>
-        </div>
-        {% else %}
-        
-        <!-- Logged In User Dashboard -->
-        <div class="watch-card">
-            <h3>Welcome: {{ user.name }}</h3>
-            <p style="color: var(--text-muted); margin-top: 5px;">{{ user.email }} | <a href="/logout" style="color: #ef4444; text-decoration: none;">Logout</a></p>
-            
-            <hr style="border-color: var(--border-color); margin: 20px 0;">
-
-            <div style="position: relative; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; margin-top: 15px;">
-                <iframe src="https://www.youtube-nocookie.com/embed/L_LUpnjgPso" style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
-            </div>
-
-            <button class="btn" id="watch-btn" onclick="triggerAdReward(3)">Watch Video (+50 Points)</button>
-        </div>
-
-        <!-- Withdraw Options -->
-        <div class="withdraw-section">
-            <h3>Select Withdrawal Method</h3>
-            <div class="withdraw-grid">
-                <div class="withdraw-card" onclick="requestWithdraw('STC Pay', 50)">
-                    <i class="fa-solid fa-mobile-screen-button" style="font-size: 1.5rem; color: var(--stc-color);"></i>
-                    <h4 style="margin-top: 8px;">STC Pay</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 50 SAR</p>
-                </div>
-                <div class="withdraw-card" onclick="requestWithdraw('Ur Pay', 50)">
-                    <i class="fa-solid fa-wallet" style="font-size: 1.5rem; color: var(--urpay-color);"></i>
-                    <h4 style="margin-top: 8px;">Ur Pay</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 50 SAR</p>
-                </div>
-                <div class="withdraw-card" onclick="requestWithdraw('iTunes Card', 100)">
-                    <i class="fa-brands fa-apple" style="font-size: 1.5rem;"></i>
-                    <h4 style="margin-top: 8px;">iTunes Card</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 100 SAR</p>
-                </div>
-                <div class="withdraw-card" onclick="requestWithdraw('App Store Card', 100)">
-                    <i class="fa-brands fa-app-store-ios" style="font-size: 1.5rem;"></i>
-                    <h4 style="margin-top: 8px;">App Store</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Minimum: 100 SAR</p>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Ghost AI Assistant Widget -->
-    <div class="ai-widget">
-        <div class="ai-box" id="ai-box">
-            <div class="ai-header">
-                <span>🤖 Ghost AI Guide</span>
-                <span style="cursor: pointer;" onclick="toggleAIBox()">✕</span>
-            </div>
-            <div class="ai-response" id="ai-response-box">
-                أهلاً بك! اضغط على أي سؤال بالأسفل لمعرفة فائدة وطريقة استخدام الموقع.
-            </div>
-            <div class="ai-buttons">
-                <button class="ai-btn" onclick="askGhostGuide('كيف اجمع النقاط؟')">💡 كيف أجمع النقاط؟</button>
-                <button class="ai-btn" onclick="askGhostGuide('كيف اسحب ارباحي؟')">💸 كيف أسحب أرباحي؟</button>
-                <button class="ai-btn" onclick="askGhostGuide('ما هي فائدة موقع GhostPay؟')">🚀 وش فائدة الموقع؟</button>
-            </div>
-        </div>
-        <button class="ai-toggle-btn" onclick="toggleAIBox()">
-            <i class="fa-solid fa-robot"></i> مساعد Ghost AI
-        </button>
-    </div>
-
-    <script>
-        function toggleAIBox() {
-            const box = document.getElementById('ai-box');
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
-
-        async function askGhostGuide(userQuestion) {
-            const responseBox = document.getElementById("ai-response-box");
-            responseBox.innerText = "جاري التحليل واستخراج الإجابة... ⚡️";
-
-            try {
-                const response = await fetch('/api/ai-guide', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: userQuestion })
-                });
-
-                const data = await response.json();
-                if(data.success) {
-                    responseBox.innerText = data.reply;
-                } else {
-                    responseBox.innerText = data.message;
-                }
-
-            } catch (error) {
-                console.error("Error:", error);
-                responseBox.innerText = "تعذر الاتصال بالسيرفر حالياً.";
-            }
-        }
-
-        function handleCredentialResponse(response) {
-            fetch('/api/auth/google', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: response.credential })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    window.location.reload();
-                } else {
-                    alert('Google Sign-In failed.');
-                }
-            });
-        }
-
-        function triggerAdReward(duration) {
-            const btn = document.getElementById('watch-btn');
-            btn.disabled = true;
-            let timer = duration;
-
-            const countdown = setInterval(() => {
-                btn.innerText = `Please wait ${timer} seconds...`;
-                timer--;
-
-                if(timer < 0) {
-                    clearInterval(countdown);
-                    btn.innerText = "Adding reward...";
-
-                    fetch('/api/ads/reward', { method: 'POST' })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.success) {
-                            document.getElementById('pts').innerText = data.new_points;
-                            document.getElementById('sar').innerText = data.new_balance.toFixed(2);
-                            btn.innerText = "Completed (+50 Points!)";
-                        } else {
-                            alert(data.message);
-                            btn.innerText = "Watch Video (+50 Points)";
-                        }
-                    });
-                }
-            }, 1000);
-        }
-
-        function requestWithdraw(method, minAmount) {
-            const currentBalance = parseFloat(document.getElementById('sar').innerText);
-            
-            if(currentBalance < minAmount) {
-                alert(`Minimum withdrawal for ${method} is ${minAmount} SAR.`);
-                return;
-            }
-
-            const accountDetails = prompt(`Enter your account or phone number for ${method}:`);
-            if(!accountDetails) return;
-
-            fetch('/api/withdraw', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount_sar: minAmount,
-                    method: method,
-                    account_info: accountDetails
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    document.getElementById('pts').innerText = data.new_points;
-                    document.getElementById('sar').innerText = data.new_balance.toFixed(2);
-                    alert(data.message);
-                } else {
-                    alert(data.message);
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+    } catch (err) {
+        alert('حدث خطأ أثناء معالجة طلب السحب');
+    }
+}
+</script>
