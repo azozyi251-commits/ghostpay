@@ -1,4 +1,5 @@
 import os
+import time
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
@@ -7,16 +8,24 @@ from google.oauth2 import id_token
 import requests
 
 app = Flask(__name__)
+
+# إعدادات أمان الجلسات والتشفير
 app.secret_key = os.environ.get("SECRET_KEY", "ghostpay_super_secret_key_2026")
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True  # تفعيل الأمان عبر HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
 GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 
+# ذاكرة الحماية الزمنية ضد السكربتات البوتات (In-memory Rate Limiter)
+USER_LAST_REWARD_TIME = {}
+USER_LAST_AI_TIME = {}
+
 def get_db_connection():
     if not DATABASE_URL:
         raise ValueError("DATABASE_URL variable is missing in Render!")
-    # إصلاح بادئة الرابط لتتوافق مع psycopg2
     url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     return psycopg2.connect(url)
 
@@ -127,6 +136,18 @@ def ads_reward():
         return jsonify({"success": False, "message": "يرجى تسجيل الدخول أولاً لحفظ نقاطك"})
 
     google_id = session["user_id"]
+    current_time = time.time()
+
+    # حماية ضد البوتات والتكرار السريع (منع إرسال طلبات قبل مرور 3 ثوانٍ)
+    last_time = USER_LAST_REWARD_TIME.get(google_id, 0)
+    if current_time - last_time < 3.0:
+        return jsonify({
+            "success": False, 
+            "message": "تم اكتشاف طلبات سريعة جداً! يرجى الانتظار 3 ثوانٍ بين كل تفاعل."
+        }), 429
+
+    USER_LAST_REWARD_TIME[google_id] = current_time
+
     update_user_balance(google_id, added_points=50, added_sar=0.50)
     updated_user = get_user(google_id)
 
@@ -142,14 +163,21 @@ def withdraw():
         return jsonify({"success": False, "message": "يرجى تسجيل الدخول أولاً"})
 
     data = request.get_json() or {}
-    amount_sar = float(data.get("amount_sar", 0))
-    method = data.get("method", "")
-    account_info = data.get("account_info", "")
+    try:
+        amount_sar = float(data.get("amount_sar", 0))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "المبلغ المدخل غير صالح"})
+
+    method = data.get("method", "").strip()
+    account_info = data.get("account_info", "").strip()
+
+    if amount_sar <= 0 or not method or not account_info:
+        return jsonify({"success": False, "message": "يرجى إدخال جميع بيانات السحب بشكل صحيح"})
 
     google_id = session["user_id"]
     user = get_user(google_id)
 
-    if float(user["balance_sar"]) < amount_sar:
+    if not user or float(user["balance_sar"]) < amount_sar:
         return jsonify({"success": False, "message": "رصيدك غير كافي للسحب"})
 
     deduct_points = int(amount_sar * 100)
@@ -165,8 +193,22 @@ def withdraw():
 
 @app.route("/api/ai-guide", methods=["POST"])
 def ai_guide():
+    if "user_id" in session:
+        google_id = session["user_id"]
+        current_time = time.time()
+        last_ai = USER_LAST_AI_TIME.get(google_id, 0)
+        if current_time - last_ai < 10.0:
+            return jsonify({
+                "success": False,
+                "message": "يرجى الانتظار 10 ثوانٍ قبل إرسال سؤال آخر للذكاء الاصطناعي."
+            }), 429
+        USER_LAST_AI_TIME[google_id] = current_time
+
     data = request.get_json() or {}
-    user_question = data.get("question", "")
+    user_question = data.get("question", "").strip()
+
+    if not user_question:
+        return jsonify({"success": False, "message": "يرجى كتابة سؤال أولاً"})
 
     if not GEMINI_API_KEY:
         return jsonify({
@@ -189,7 +231,7 @@ def ai_guide():
     for model in models_to_try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
         try:
-            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=8)
             res_data = res.json()
 
             if "candidates" in res_data and len(res_data["candidates"]) > 0:
