@@ -16,9 +16,15 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
-GOOGLE_CLIENT_ID = ":)"
+GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com
+"
 
 USER_LAST_REWARD_TIME = {}
+
+# الإعدادات المالية الدقيقة للمنصة (50/50 Profit Split)
+REWARD_PER_CLICK_SAR = 0.0004  # قيمة المكافأة للمستخدم عن كل ضغطة
+POINTS_PER_CLICK = 10         # النقاط عن كل ضغطة
+MIN_WITHDRAWAL_SAR = 0.0004    # الحد الأدنى لطلب السحب
 
 def get_db_connection():
     if not DATABASE_URL:
@@ -36,26 +42,42 @@ def init_db():
     if conn:
         try:
             cursor = conn.cursor()
+            # استخدام NUMERIC(12, 4) بدلاً من REAL للحفاظ على دقة الأرقام العشرية (0.0004)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     google_id TEXT PRIMARY KEY,
                     email TEXT NOT NULL,
                     name TEXT NOT NULL,
                     points INTEGER DEFAULT 0,
-                    balance_sar REAL DEFAULT 0.0
+                    balance_sar NUMERIC(12, 4) DEFAULT 0.0000
                 );
             """)
             conn.commit()
             cursor.close()
             conn.close()
-            print("PostgreSQL Initialized Successfully.")
+            print("PostgreSQL Initialized Successfully with 4-decimal precision.")
         except Exception as e:
             print("Database Init Error:", e)
 
+def reset_all_data():
+    """تصفير كافة أرصدة ونقاط المستخدمين للبدء من الصفر النقي (0.0000)"""
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET points = 0, balance_sar = 0.0000;")
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print("--- ALL USER BALANCES & POINTS RESET TO ZERO SUCCESSFULLY ---")
+        except Exception as e:
+            print("Reset Error:", e)
+
 try:
     init_db()
+    reset_all_data()  # تصفير القاعدة فور التشغيل
 except Exception as e:
-    print("Init DB skipped/failed:", e)
+    print("Init/Reset DB skipped or failed:", e)
 
 def get_user(google_id):
     conn = get_db_connection()
@@ -80,7 +102,7 @@ def create_or_get_user(google_id, email, name):
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (%s, %s, %s, 0, 0.0);",
+                    "INSERT INTO users (google_id, email, name, points, balance_sar) VALUES (%s, %s, %s, 0, 0.0000);",
                     (google_id, email, name)
                 )
                 conn.commit()
@@ -96,8 +118,9 @@ def update_user_balance(google_id, added_points, added_sar):
     if conn:
         try:
             cursor = conn.cursor()
+            # حفظ الناتج بـ 4 أرقام عشرية دقيقة دائماً (0.0004 -> 0.0008 -> 0.0012)
             cursor.execute(
-                "UPDATE users SET points = points + %s, balance_sar = ROUND((balance_sar + %s)::numeric, 2) WHERE google_id = %s;",
+                "UPDATE users SET points = points + %s, balance_sar = ROUND((balance_sar + %s)::numeric, 4) WHERE google_id = %s;",
                 (added_points, added_sar, google_id)
             )
             conn.commit()
@@ -163,7 +186,8 @@ def ads_reward():
 
     USER_LAST_REWARD_TIME[google_id] = current_time
 
-    update_user_balance(google_id, added_points=50, added_sar=0.50)
+    # إضافة 10 نقاط و 0.0004 ريال بدقة عالية
+    update_user_balance(google_id, added_points=POINTS_PER_CLICK, added_sar=REWARD_PER_CLICK_SAR)
     updated_user = get_user(google_id)
 
     if not updated_user:
@@ -192,19 +216,23 @@ def withdraw():
     if amount_sar <= 0 or not method or not account_info:
         return jsonify({"success": False, "message": "يرجى إدخال جميع بيانات السحب بشكل صحيح"})
 
+    if amount_sar < MIN_WITHDRAWAL_SAR:
+        return jsonify({"success": False, "message": f"الحد الأدنى لطلب السحب هو {MIN_WITHDRAWAL_SAR} ريال"})
+
     google_id = session["user_id"]
     user = get_user(google_id)
 
     if not user or float(user["balance_sar"]) < amount_sar:
         return jsonify({"success": False, "message": "رصيدك الحالي غير كافٍ لهذا الطلب"})
 
-    deduct_points = int(amount_sar * 100)
+    # خصم المبلغ بدقة أربعة أرقام عشرية والنقاط المقابلة
+    deduct_points = int(amount_sar * 10000)
     update_user_balance(google_id, added_points=-deduct_points, added_sar=-amount_sar)
     updated_user = get_user(google_id)
 
     return jsonify({
         "success": True,
-        "message": f"تم استلام طلب سحب {amount_sar} ريال عبر {method} بنجاح! وسيتم التحويل للحساب ({account_info}) قريباً.",
+        "message": f"تم استلام طلب سحب {amount_sar:.4f} ريال عبر {method} بنجاح! وسيتم التحويل للحساب ({account_info}) قريباً.",
         "new_points": updated_user["points"],
         "new_balance": float(updated_user["balance_sar"])
     })
