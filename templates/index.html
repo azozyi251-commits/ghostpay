@@ -70,7 +70,7 @@
                 <option value="UrPay">UrPay</option>
             </select>
             <input type="text" id="w-account" placeholder="رقم الجوال / المحفظة">
-            <input type="number" id="w-amount" placeholder="المبلغ بالريال" step="0.5">
+            <input type="number" id="w-amount" placeholder="المبلغ بالريال (الأدنى 0.0004)" step="any" min="0.0004">
             <button class="btn" onclick="handleWithdraw()">سحب الآن</button>
         </div>
 
@@ -130,7 +130,6 @@ async function handleCredentialResponse(response) {
 
 async function claimReward() {
     // 1. فتح رابط Adsterra المباشر (Smartlink) في تبويب جديد لتسجيل الأرباح
-    // استبدل الرابط أدناه برابط الـ Smartlink الخاص بك فور قبوله
     window.open('https://www.profitableratecpmnetwork.com/z4eea3st?key=3492fa8e73a265c117db7f10eb440b41');
 
     // 2. إرسال طلب احتساب النقاط والمكافأة للسيرفر
@@ -155,12 +154,20 @@ async function claimReward() {
 async function handleWithdraw() {
     const method = document.getElementById('w-method').value;
     const accountInfo = document.getElementById('w-account').value;
-    const amount = document.getElementById('w-amount').value;
+    const amountVal = document.getElementById('w-amount').value;
+    const amount = parseFloat(amountVal);
     
-    if(!accountInfo || !amount) {
-        alert('يرجى كتابة جميع البيانات بشكل صحيح');
+    if (!accountInfo || isNaN(amount) || amount <= 0) {
+        alert('يرجى كتابة كافة البيانات بشكل صحيح');
         return;
     }
+
+    // التحقق من الحد الأدنى للسحب قبل إرسال الطلب (0.0004 ريال)
+    if (amount < 0.0004) {
+        alert('الحد الأدنى المتاح لطلب السحب هو 0.0004 ريال سعودي');
+        return;
+    }
+
     await submitWithdrawal(method, accountInfo, amount);
 }
 
