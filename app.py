@@ -16,8 +16,7 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
-GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com
-"
+GOOGLE_CLIENT_ID = "906645015267-71r989vufuujrqf8itiak72sbpvnej6e.apps.googleusercontent.com"
 
 USER_LAST_REWARD_TIME = {}
 
