@@ -3,207 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostPay Platform</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <!-- ========================================== -->
-    <!-- Adsterra Popunder Script Integration       -->
-    <!-- استبدل الرابط بالـ Popunder الخاص بك من Adsterra -->
-    <!-- ========================================== -->
-    <script src="https://pl31555306.profitableratecpmnetwork.com/73/12/cf/7312cf84dc845c83e9a929012e3a33ff.js"></script>
-
+    <title>GhostPay Platform | Cyber Security & Commerce</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #0b0f19;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
+        body { 
+            background-color: #06090e; 
+            color: #00f0ff; 
+            font-family: 'Courier New', Courier, monospace; 
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #111827;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        .glass-cyber { 
+            background: rgba(13, 17, 26, 0.85); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(0, 240, 255, 0.15); 
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.05); 
         }
-        .btn {
-            background: #00ffcc;
-            color: #000;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 15px;
+        .glass-cyber:hover { 
+            border-color: rgba(0, 240, 255, 0.4); 
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15); 
         }
-        .withdraw-box {
-            background: #1f2937;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        input, select {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #374151;
-            background: #111827;
-            color: white;
-        }
-        .fireplace-box {
-            margin-top: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+        .neon-glow-cyan { text-shadow: 0 0 10px #00f0ff; }
+        .neon-glow-green { text-shadow: 0 0 10px #00ff66; }
+        .shield-button-glow { box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-<div class="container">
-    <h1>👑 GhostPay Platform</h1>
-    
-    {% if user %}
-        <h2>مرحباً بك: {{ user.name }}</h2>
-        <p>النقاط: <span id="user-points">{{ user.points if user.points else 0 }}</span> | الرصيد: <span id="user-balance">{{ '%.4f'|format(user.balance_sar) if user.balance_sar else '0.0000' }}</span> ريال</p>
-        <button class="btn" onclick="claimReward()">🔥 جمع الأرباح (اضغط هنا)</button>
-        
-        <div class="withdraw-box">
-            <h3>طلب سحب الأرباح</h3>
-            <select id="w-method">
-                <option value="STC Pay">STC Pay</option>
-                <option value="UrPay">UrPay</option>
-            </select>
-            <input type="text" id="w-account" placeholder="رقم الجوال / المحفظة">
-            <input type="number" id="w-amount" placeholder="المبلغ بالريال (الأدنى 0.0004)" step="any" min="0.0004">
-            <button class="btn" onclick="handleWithdraw()">سحب الآن</button>
+    <!-- 1. Top Terminal Security Bar -->
+    <div class="flex flex-wrap justify-between items-center text-xs text-gray-400 mb-6 pb-2 border-b border-cyan-900/50">
+        <div class="flex items-center gap-3">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>SYSTEM_STATUS: <strong class="text-emerald-400">GHOSTPAY_SHIELD_ONLINE</strong></span>
         </div>
-
-        <br><br>
-        <a href="/logout" style="color: #ff4d4d;">تسجيل الخروج</a>
-    {% else %}
-        <h2>سجل دخولك لبدء كسب الأرباح</h2>
-        <p>استخدم حساب Google لتسجيل الدخول الفوري</p>
-        <div style="display: flex; justify-content: center; margin-top: 15px;">
-            <div id="g_id_onload"
-                 data-client_id="{{ google_client_id }}"
-                 data-callback="handleCredentialResponse">
-            </div>
-            <div class="g_id_signin" data-type="standard"></div>
+        <div class="hidden sm:block">
+            HWID_HASH: <span class="text-cyan-400">e3b0c44298fc1c149afbf4c8996fb924...</span>
         </div>
-    {% endif %}
-
-    <div class="fireplace-box">
-        <iframe width="100%" height="315" 
-                src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1&playlist=L_LUpnjgPso" 
-                frameborder="0" 
-                allow="autoplay; encrypted-media" 
-                allowfullscreen>
-        </iframe>
+        <div>
+            PROTOCOL: <span class="text-amber-400">HMAC-SHA256</span>
+        </div>
     </div>
-</div>
 
-<script>
-/* GhostPay Core Script */
-document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    <!-- 2. Header & Dual Wallet -->
+    <header class="flex flex-col md:flex-row justify-between items-center glass-cyber p-5 rounded-2xl mb-8 gap-4">
+        <div class="text-center md:text-right">
+            <h1 class="text-3xl font-black tracking-widest text-white neon-glow-cyan">GHOST<span class="text-cyan-400">PAY</span></h1>
+            <p class="text-xs text-cyan-500/70">Autonomous Security & Commerce Ecosystem</p>
+        </div>
 
-document.onkeydown = function(e) {
-    if (e.keyCode == 123 || 
-       (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
-       (e.ctrlKey && e.keyCode == 85)) {
-        return false;
-    }
-};
+        <!-- Encrypted Wallets Display -->
+        <div class="flex gap-4 w-full md:w-auto justify-center">
+            <div class="bg-black/70 px-4 py-2 rounded-xl border border-amber-500/30 flex-1 md:flex-initial text-center">
+                <span class="text-[10px] text-amber-500 block font-bold">EARNED_BALANCE</span>
+                <span class="text-lg font-bold text-amber-400">125.5000 SAR</span>
+            </div>
+            <div class="bg-black/70 px-4 py-2 rounded-xl border border-emerald-500/30 flex-1 md:flex-initial text-center">
+                <span class="text-[10px] text-emerald-500 block font-bold">PURCHASE_BALANCE</span>
+                <span class="text-lg font-bold text-emerald-400 neon-glow-green">50.0000 SAR</span>
+            </div>
+        </div>
+    </header>
 
-async function handleCredentialResponse(response) {
-    try {
-        const res = await fetch('/api/auth/google', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: response.credential })
-        });
-        const data = await res.json();
-        if (data.success) {
-            location.reload();
-        } else {
-            alert(data.message || 'فشل تسجيل الدخول');
-        }
-    } catch(e) {
-        alert('حدث خطأ أثناء تسجيل الدخول');
-    }
-}
+    <!-- 3. Main Workspace Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        
+        <!-- Collect Rewards Module -->
+        <section class="glass-cyber p-6 rounded-2xl relative flex flex-col justify-between">
+            <div class="absolute top-0 left-0 bg-cyan-500 text-black text-[10px] font-bold px-3 py-1 rounded-br-lg">
+                HWID_VERIFIED
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-white mb-2">[ منطقة جمع الأرباح ]</h2>
+                <p class="text-xs text-gray-400 mb-6">يتم توليد توقيع أمني من GhostPay Shield للتحقق من سلامة البيئة قبل التوثيق.</p>
+            </div>
+            
+            <div class="my-6">
+                <button class="w-full py-5 bg-gradient-to-r from-cyan-950 to-blue-950 hover:from-cyan-900 hover:to-blue-900 border border-cyan-400 text-cyan-300 font-bold rounded-xl tracking-wider transition-all shield-button-glow hover:text-white">
+                    ⚡ [ EXECUTE_COLLECT_CALLBACK ]
+                </button>
+            </div>
+            
+            <div class="text-[10px] text-gray-500 flex justify-between pt-4 border-t border-cyan-900/40">
+                <span>SECURITY_LAYER: ACTIVE</span>
+                <span>LATENCY: 14ms</span>
+            </div>
+        </section>
 
-async function claimReward() {
-    // 1. فتح رابط Adsterra المباشر (Smartlink) في تبويب جديد لتسجيل الأرباح
-    // استبدل الرابط أدناه برابط الـ Smartlink الخاص بك فور قبوله
-    window.open(':)');
+        <!-- GhostPay Shield Store Module -->
+        <section class="glass-cyber p-6 rounded-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-emerald-400">[ متجر GhostPay Shield ]</h2>
+                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">SAAS_SERVICES</span>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Item 1 -->
+                <div class="bg-black/60 p-4 rounded-xl border border-cyan-900/60 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-white font-bold text-sm">Web Anti-Bot API Key</h3>
+                        <p class="text-[11px] text-gray-400 mt-1">حماية المتاجر الإلكترونية من الحسابات الوهمية والسكريبتات</p>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-emerald-400 font-bold text-sm mb-1">150 SAR</span>
+                        <button class="px-3 py-1.5 bg-cyan-950 hover:bg-cyan-800 border border-cyan-400 text-cyan-300 text-xs rounded transition-all">
+                            BUY_LICENSE
+                        </button>
+                    </div>
+                </div>
 
-    // 2. إرسال طلب احتساب النقاط والمكافأة للسيرفر
-    try {
-        const response = await fetch('/api/ads/reward', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        if (data.success) {
-            if(document.getElementById('user-points')) document.getElementById('user-points').innerText = data.new_points;
-            if(document.getElementById('user-balance')) {
-                document.getElementById('user-balance').innerText = Number(data.new_balance).toFixed(4);
-            }
-            alert('تم مشاهدة الإعلان وإضافة مكافأتك لرصيدك بنجاح!');
-        } else {
-            alert(data.message || 'حدث خطأ أثناء إضافة المكافأة');
-        }
-    } catch (err) {
-        alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
-    }
-}
+                <!-- Item 2 -->
+                <div class="bg-black/60 p-4 rounded-xl border border-cyan-900/60 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-white font-bold text-sm">HWID Anti-Cheat Module</h3>
+                        <p class="text-[11px] text-gray-400 mt-1">توثيق وحظر عتاد الأجهزة المكررة لأصحاب الألعاب والتطبيقات</p>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-emerald-400 font-bold text-sm mb-1">300 SAR</span>
+                        <button class="px-3 py-1.5 bg-cyan-950 hover:bg-cyan-800 border border-cyan-400 text-cyan-300 text-xs rounded transition-all">
+                            BUY_LICENSE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-async function handleWithdraw() {
-    const method = document.getElementById('w-method').value;
-    const accountInfo = document.getElementById('w-account').value;
-    const amountVal = document.getElementById('w-amount').value;
-    const amount = parseFloat(amountVal);
-    
-    if (!accountInfo || isNaN(amount) || amount <= 0) {
-        alert('يرجى كتابة جميع البيانات بشكل صحيح');
-        return;
-    }
+    </main>
 
-    if (amount < 0.0004) {
-        alert('الحد الأدنى لطلب السحب هو 0.0004 ريال سعودي');
-        return;
-    }
-
-    await submitWithdrawal(method, accountInfo, amount);
-}
-
-async function submitWithdrawal(method, accountInfo, amount) {
-    try {
-        const response = await fetch('/api/withdraw', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ method: method, account_info: accountInfo, amount_sar: amount })
-        });
-        const data = await response.json();
-        if (data.success) {
-            alert(data.message);
-            location.reload();
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        alert('حدث خطأ أثناء معالجة طلب السحب');
-    }
-}
-</script>
-
-<!-- ========================================== -->
-<!-- Adsterra Social Bar Script Integration    -->
-<!-- ========================================== -->
-<script src="https://pl31555305.profitableratecpmnetwork.com/d8/05/c0/d805c039b056089f891b88610592fdb6.js"></script>
+    <!-- 4. Footer & Certificates -->
+    <footer class="glass-cyber p-6 rounded-2xl text-center text-xs text-gray-500">
+        <div class="flex flex-wrap justify-center items-center gap-4 md:gap-8 mb-4">
+            <span class="flex items-center gap-1.5 text-emerald-400 border border-emerald-500/30 bg-emerald-950/40 px-3 py-1 rounded-full text-[11px]">
+                🔒 256-BIT SSL ENCRYPTED
+            </span>
+            <span class="flex items-center gap-1.5 text-cyan-400 border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 rounded-full text-[11px]">
+                🛡️ GHOSTPAY_SHIELD_VERIFIED
+            </span>
+            <span class="flex items-center gap-1.5 text-amber-400 border border-amber-500/30 bg-amber-950/40 px-3 py-1 rounded-full text-[11px]">
+                ⚡ HWID_ANTI_BOT_ACTIVE
+            </span>
+        </div>
+        <p>© 2026 GhostPay Security & Commerce Platform. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
