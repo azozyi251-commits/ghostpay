@@ -197,17 +197,17 @@
                     <span>ACTION_TAKEN</span>
                 </div>
                 <div class="flex justify-between items-center text-cyan-300">
-                    <span id="log-time-1">2026-10-04 20:04:12</span>
+                    <span>2026-10-04 20:04:12</span>
                     <span class="text-gray-300">HWID_GUARD_ENGINE</span>
                     <span class="text-red-400 font-bold">[ BLOCKED: VIRTUAL_MACHINE_SPOOF ]</span>
                 </div>
                 <div class="flex justify-between items-center text-cyan-300">
-                    <span id="log-time-2">2026-10-04 20:03:55</span>
+                    <span>2026-10-04 20:03:55</span>
                     <span class="text-gray-300">WEB_SHIELD_BOT_GUARD</span>
                     <span class="text-red-400 font-bold">[ BLOCKED: RATE_LIMIT_EXCEEDED ]</span>
                 </div>
                 <div class="flex justify-between items-center text-cyan-300">
-                    <span id="log-time-3">2026-10-04 20:02:18</span>
+                    <span>2026-10-04 20:02:18</span>
                     <span class="text-gray-300">GAME_ANTI_CHEAT_SUITE</span>
                     <span class="text-red-400 font-bold">[ BLOCKED: AUTO_CLICKER_MACRO ]</span>
                 </div>
@@ -234,7 +234,26 @@
     </footer>
 
     <script>
-        // دالة بدء عملية الدفع والشراء لباقات الحماية
+        // التحقق من حالة تسجيل الدخول عبر الجلسة عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/v1/user/session');
+                const data = await res.json();
+                const sessionDiv = document.getElementById('user-session-status');
+                
+                if (data.authenticated && data.user) {
+                    sessionDiv.innerHTML = `SESSION: <span class="text-emerald-400 font-bold">${data.user.email}</span> | <a href="/auth/logout" class="text-red-400 underline">LOGOUT</a>`;
+                    document.getElementById('purchase-balance').innerText = (data.user.purchaseBalance || 0).toFixed(4) + " SAR";
+                    document.getElementById('earned-balance').innerText = (data.user.earnedBalance || 0).toFixed(4) + " SAR";
+                } else {
+                    sessionDiv.innerHTML = `SESSION: <span class="text-amber-400">GUEST_MODE</span> | <a href="/auth/login" class="underline hover:text-white">LOGIN_VIA_GOOGLE</a>`;
+                }
+            } catch(e) {
+                console.error('Session check failed', e);
+            }
+        });
+
+        // دالة بدء عملية الشراء
         async function initiateCheckout(serviceType, price) {
             try {
                 const response = await fetch('/api/v1/billing/checkout', {
