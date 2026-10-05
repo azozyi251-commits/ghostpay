@@ -1,219 +1,458 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostPay | Secure Cyber Defense</title>
+    <title>GhostPay | Elite Cyber Security by KingofMachineError</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        cyberdark: '#050508',
-                        cybergray: '#0c0d14',
-                        cyberborder: '#1f2438',
-                        neoncyan: '#00f0ff',
-                        neonred: '#ff0055',
-                        neongreen: '#00ff66'
+                        cyber: {
+                            900: '#030712',
+                            800: '#0b0f19',
+                            700: '#111827',
+                            600: '#1f2937',
+                            neonGreen: '#00ff66',
+                            electricCyan: '#00f0ff',
+                            darkGreenText: '#10b981',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', Courier, monospace],
+                        sans: ['Inter', 'sans-serif']
                     }
                 }
             }
         }
     </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        /* Custom Cyberpunk Glows & Matrix Grid Background */
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #050508;
-            color: #e2e8f0;
+            background-color: #030712;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
-        .code-font {
-            font-family: 'Share Tech Mono', monospace;
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
         }
-        .cyber-glow {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+        .glow-box {
+            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.15);
+            transition: all 0.3s ease-in-out;
         }
-        .cyber-glow-red {
-            box-shadow: 0 0 25px rgba(255, 0, 85, 0.2);
+        .glow-box:hover {
+            box-shadow: 0 0 35px 0px rgba(0, 255, 102, 0.25);
+            border-color: rgba(0, 255, 102, 0.6);
         }
-        .cyber-border {
-            border: 1px solid #1f2438;
+        .glow-box-extreme {
+            box-shadow: 0 0 40px 0px rgba(0, 255, 102, 0.3);
+            border: 2px solid rgba(0, 255, 102, 0.6);
         }
-        .cyber-border:hover {
-            border-color: #00f0ff;
+        .text-glow {
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+        }
+        .cyan-glow {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        /* Custom scrollbar for cyber terminals */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
         }
     </style>
 </head>
-<body class="min-h-screen bg-cyberdark overflow-x-hidden selection:bg-neoncyan selection:text-black">
+<body class="cyber-grid min-h-screen flex flex-col selection:bg-cyber-neonGreen selection:text-black">
 
-    <!-- Top Security Banner -->
-    <div class="bg-cybergray border-b border-cyberborder py-2 px-4 text-xs code-font text-center tracking-widest text-gray-400">
-        [SYSTEM STATUS: ONLINE] // AUTHORIZED BY: <span class="text-neoncyan font-bold">KingofMachineError</span> // ZERO-TOLERANCE SECURITY PROTOCOL
-    </div>
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-cyber-900/80 border-b border-cyber-600/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-800 border border-cyber-electricCyan/50 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+                    <i data-lucide="shield-alert" class="w-6 h-6 text-cyber-electricCyan"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider text-white">GHOST<span class="text-cyber-neonGreen">PAY</span></span>
+                    <p class="text-[10px] font-mono text-cyber-electricCyan uppercase tracking-widest">By KingofMachineError</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 font-mono text-sm">
+                <a href="#pricing" class="text-gray-300 hover:text-cyber-neonGreen transition-colors flex items-center gap-1.5">
+                    <i data-lucide="cpu" class="w-4 h-4"></i> Tiers
+                </a>
+                <a href="#terminal" class="text-gray-300 hover:text-cyber-neonGreen transition-colors flex items-center gap-1.5">
+                    <i data-lucide="terminal" class="w-4 h-4"></i> Live Telemetry
+                </a>
+                <a href="#accountability" class="text-gray-300 hover:text-cyber-neonGreen transition-colors flex items-center gap-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4"></i> Accountability
+                </a>
+            </nav>
 
-    <!-- Header / Hero Section -->
-    <header class="container mx-auto px-6 py-16 text-center">
-        <!-- رجعنا البادج السيبراني المرعب -->
-        <div class="inline-block mb-4 px-4 py-1 rounded-full bg-cyberborder text-neoncyan code-font text-xs tracking-wider uppercase border border-neoncyan/30">
-            Elite Cyber Defense & Asset Protection
+            <div class="flex items-center space-x-4">
+                <div class="hidden lg:flex items-center space-x-2 bg-cyber-800/80 px-3 py-1.5 rounded border border-cyber-neonGreen/30 font-mono text-xs text-cyber-neonGreen">
+                    <span class="w-2 h-2 rounded-full bg-cyber-neonGreen animate-pulse"></span>
+                    <span>SYSTEM ONLINE // SECURE</span>
+                </div>
+                <a href="#pricing" class="bg-gradient-to-r from-cyber-neonGreen to-cyber-electricCyan text-black font-bold font-mono px-5 py-2.5 rounded text-sm hover:opacity-90 transition-all shadow-[0_0_20px_rgba(0,255,102,0.4)]">
+                    DEPLOY DEFENSE
+                </a>
+            </div>
         </div>
-        <h1 class="text-5xl md:text-7xl font-black tracking-wider mb-6 text-white">
-            GHOST<span class="text-neoncyan">PAY</span>
-        </h1>
-        <p class="max-w-2xl mx-auto text-gray-400 text-lg md:text-xl leading-relaxed">
-            منظومة أمنية سيبرانية صارمة لا تعرف الرحمة. نتحمل المسؤولية الكاملة لحماية أصولك، ألعابك، وأنظمتك من العبث والمخترقين.
-        </p>
     </header>
 
-    <!-- Pricing & Tiers Section -->
-    <section class="container mx-auto px-6 py-12">
-        <div class="text-center mb-12">
-            <h2 class="text-2xl md:text-3xl font-bold text-white code-font">/// SELECT PROTECTION LEVEL</h2>
-            <p class="text-gray-500 text-sm mt-2">أسعار حقيقية تعكس ثقل وحجم الحماية المطلوبة</p>
+    <section class="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center flex-grow flex flex-col justify-center">
+        <div class="absolute inset-0 -z-10 flex items-center justify-center opacity-10 pointer-events-none">
+            <span class="text-[18vw] font-black font-mono text-cyber-electricCyan select-none">GHOST</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-cyber-800/90 border border-cyber-electricCyan/40 px-4 py-1.5 rounded-full text-xs font-mono text-cyber-electricCyan mb-6 mx-auto shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            <span>NO-NONSE ENTERPRISE CYBER DEFENSE SYSTEMS</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 max-w-5xl mx-auto">
+            UNCOMPROMISING <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-neonGreen to-cyber-electricCyan text-glow">CYBER ARCHITECTURE</span>
+        </h1>
+
+        <p class="text-gray-400 text-lg sm:text-xl max-w-3xl mx-auto font-mono mb-10 leading-relaxed">
+            Engineered from the deep core by <span class="text-white font-bold underline decoration-cyber-neonGreen">KingofMachineError</span>. Built to eliminate malicious exploits, neutralize zero-days, and enforce ironclad dominion over games and server infrastructures.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 font-mono">
+            <a href="#pricing" class="bg-cyber-neonGreen text-black font-extrabold px-8 py-4 rounded text-base hover:bg-emerald-400 transition-all shadow-[0_0_30px_rgba(0,255,102,0.5)] flex items-center justify-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5"></i> VIEW PRICING MATRIX
+            </a>
+            <a href="#terminal" class="bg-cyber-800 border border-cyber-600 text-white font-semibold px-8 py-4 rounded text-base hover:border-cyber-electricCyan transition-all flex items-center justify-center gap-2">
+                <i data-lucide="terminal" class="w-5 h-5 text-cyber-electricCyan"></i> VIEW SYSTEM LOGS
+            </a>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl sm:text-4xl font-black font-mono tracking-wide mb-4">
+                <span class="text-cyber-electricCyan">//</span> THE PRICING MATRIX
+            </h2>
+            <p class="text-gray-400 font-mono text-sm max-w-xl mx-auto">
+                Elite solutions priced to reflect total technical superiority and personal developer accountability. No cheap scripts. Pure infrastructure.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             
             <!-- Tier 1: HWID Guard -->
-            <div class="bg-cybergray rounded-xl p-8 cyber-border flex flex-col justify-between transition-all duration-300 hover:cyber-glow">
+            <div class="bg-cyber-800/90 border border-cyber-600/60 rounded-xl p-8 flex flex-col justify-between glow-box relative">
                 <div>
-                    <div class="code-font text-xs text-gray-500 mb-2">TIER 01</div>
-                    <h3 class="text-2xl font-bold text-white mb-2">HWID Guard</h3>
-                    <p class="text-gray-400 text-sm mb-6">حماية خفيفة وسريعة لتأمين البرمجيات وتراخيص الأجهزة ومنع تجاوزات التفعيل.</p>
-                    <div class="text-4xl font-black text-neoncyan code-font mb-6">$100</div>
-                    <ul class="space-y-3 text-sm text-gray-300 mb-8">
-                        <li class="flex items-center">✓ قفل الأجهزة المرخصة</li>
-                        <li class="flex items-center">✓ منع التلاعب بالملفات</li>
-                        <li class="flex items-center">✓ استجابة فورية وحماية أساسية</li>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 bg-cyber-700 text-cyber-electricCyan font-mono text-xs rounded border border-cyber-electricCyan/30">TIER I // LICENSING</span>
+                        <i data-lucide="key" class="w-6 h-6 text-cyber-electricCyan"></i>
+                    </div>
+                    <h3 class="text-2xl font-black font-mono text-white mb-2">HWID Guard</h3>
+                    <p class="text-gray-400 text-sm mb-6 font-mono">Device and license security engineered specifically for professional developers.</p>
+                    
+                    <div class="mb-8">
+                        <span class="text-4xl sm:text-5xl font-black font-mono text-white">$100</span>
+                        <span class="text-gray-500 font-mono text-xs"> / flat deployment</span>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-sm text-gray-300 mb-8">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-electricCyan flex-shrink-0"></i>
+                            <span>Advanced Hardware Fingerprinting</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-electricCyan flex-shrink-0"></i>
+                            <span>Instant License Revocation API</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-electricCyan flex-shrink-0"></i>
+                            <span>Bypass-Resistant Token Verification</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-electricCyan flex-shrink-0"></i>
+                            <span>Lightweight Client Integration</span>
+                        </li>
                     </ul>
                 </div>
-                <button onclick="selectTier('HWID Guard ($100)')" class="w-full py-3 rounded bg-cyberborder text-neoncyan code-font font-bold hover:bg-neoncyan hover:text-black transition-all duration-300 border border-neoncyan/40">
-                    طلب الحماية
+
+                <button onclick="openCheckout('HWID Guard', '$100')" class="w-full bg-cyber-700 hover:bg-cyber-600 text-cyber-electricCyan border border-cyber-electricCyan/40 font-mono font-bold py-3 rounded transition-all shadow-[0_0_15px_rgba(0,240,255,0.15)] flex items-center justify-center gap-2">
+                    <i data-lucide="cpu" class="w-4 h-4"></i> ACQUIRE HWID GUARD
                 </button>
             </div>
 
             <!-- Tier 2: Web & API Protection -->
-            <div class="bg-cybergray rounded-xl p-8 cyber-border flex flex-col justify-between transition-all duration-300 hover:cyber-glow relative">
-                <div class="absolute -top-3 right-6 bg-neoncyan text-black text-xs px-3 py-1 rounded code-font font-bold">POPULAR</div>
+            <div class="bg-cyber-800/90 border border-cyber-600/60 rounded-xl p-8 flex flex-col justify-between glow-box relative">
                 <div>
-                    <div class="code-font text-xs text-gray-500 mb-2">TIER 02</div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Web & API Protection</h3>
-                    <p class="text-gray-400 text-sm mb-6">جدار صد متكامل للسيرفرات، المواقع، وقواعد البيانات ضد هجمات الـ DDoS والثغرات.</p>
-                    <div class="text-4xl font-black text-neoncyan code-font mb-6">$500</div>
-                    <ul class="space-y-3 text-sm text-gray-300 mb-8">
-                        <li class="flex items-center">✓ فلترة الـ APIs بالكامل</li>
-                        <li class="flex items-center">✓ صد هجمات الـ DDoS</li>
-                        <li class="flex items-center">✓ مراقبة أمنية مستمرة</li>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 bg-cyber-700 text-amber-400 font-mono text-xs rounded border border-amber-400/30">TIER II // INFRASTRUCTURE</span>
+                        <i data-lucide="shield" class="w-6 h-6 text-amber-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-black font-mono text-white mb-2">Web & API Protection</h3>
+                    <p class="text-gray-400 text-sm mb-6 font-mono">Robust server and endpoint defense against DDoS, injection, and automated bot swarms.</p>
+                    
+                    <div class="mb-8">
+                        <span class="text-4xl sm:text-5xl font-black font-mono text-white">$500</span>
+                        <span class="text-gray-500 font-mono text-xs"> / full perimeter setup</span>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-sm text-gray-300 mb-8">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                            <span>Real-Time Layer 7 DDoS Mitigation</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                            <span>Advanced SQLi / XSS / RCE Shielding</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                            <span>Custom Rate Limiting & Behavioral WAF</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                            <span>Zero-Latency Edge Routing</span>
+                        </li>
                     </ul>
                 </div>
-                <button onclick="selectTier('Web & API Protection ($500)')" class="w-full py-3 rounded bg-neoncyan text-black code-font font-bold hover:bg-white transition-all duration-300">
-                    طلب الحماية
+
+                <button onclick="openCheckout('Web & API Protection', '$500')" class="w-full bg-cyber-700 hover:bg-cyber-600 text-amber-400 border border-amber-400/40 font-mono font-bold py-3 rounded transition-all shadow-[0_0_15px_rgba(251,191,36,0.15)] flex items-center justify-center gap-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i> SECURE INFRASTRUCTURE
                 </button>
             </div>
 
-            <!-- Tier 3: Game Anti-Cheat (The Beast) -->
-            <div class="bg-cybergray rounded-xl p-8 cyber-border flex flex-col justify-between transition-all duration-300 hover:cyber-glow-red border-neonred/40">
+            <!-- Tier 3: Game Anti-Cheat (Flagship Elite) -->
+            <div class="bg-gradient-to-b from-cyber-800 to-cyber-900 border-2 border-cyber-neonGreen rounded-xl p-8 flex flex-col justify-between glow-box-extreme relative lg:-translate-y-4">
+                <div class="absolute -top-3.5 right-6 bg-cyber-neonGreen text-black font-mono text-[10px] font-extrabold px-3 py-1 rounded tracking-wider shadow-[0_0_10px_rgba(0,255,102,0.8)]">
+                    FLAGSHIP ELITE SYSTEM
+                </div>
                 <div>
-                    <div class="code-font text-xs text-neonred mb-2">TIER 03 // ELITE</div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Game Anti-Cheat</h3>
-                    <p class="text-gray-400 text-sm mb-6">النظام المرعب لحماية الألعاب والمسؤولية الكاملة. هندسة عكسية، رصد الميموري والماكروز.</p>
-                    <div class="text-4xl font-black text-neonred code-font mb-6">$5,000</div>
-                    <ul class="space-y-3 text-sm text-gray-300 mb-8">
-                        <li class="flex items-center text-neonred font-medium">⚡ حماية كاملة داخل اللعبة (Core)</li>
-                        <li class="flex items-center">✓ حظر الهاكات والماكروز تماماً</li>
-                        <li class="flex items-center">✓ إشراف ومسؤولية مباشرة مني شخصياً</li>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 bg-cyber-neonGreen/20 text-cyber-neonGreen font-mono text-xs rounded border border-cyber-neonGreen/40">TIER III // KERNEL DOMINION</span>
+                        <i data-lucide="shield-alert" class="w-6 h-6 text-cyber-neonGreen"></i>
+                    </div>
+                    <h3 class="text-2xl font-black font-mono text-white mb-2">Game Anti-Cheat</h3>
+                    <p class="text-gray-300 text-sm mb-6 font-mono">Elite core game protection, live memory monitoring, macro/hack prevention with direct developer accountability.</p>
+                    
+                    <div class="mb-8">
+                        <span class="text-4xl sm:text-5xl font-black font-mono text-cyber-neonGreen text-glow">$5,000</span>
+                        <span class="text-gray-400 font-mono text-xs"> / complete ecosystem</span>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-sm text-gray-200 mb-8">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-neonGreen flex-shrink-0"></i>
+                            <span>Deep Memory Inspection & Shielding</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-neonGreen flex-shrink-0"></i>
+                            <span>Macro & Injection Zero-Tolerance Block</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-neonGreen flex-shrink-0"></i>
+                            <span>Personal Accountability by KingofMachineError</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="check" class="w-4 h-4 text-cyber-neonGreen flex-shrink-0"></i>
+                            <span>Direct Emergency Developer Response & Patching</span>
+                        </li>
                     </ul>
                 </div>
-                <button onclick="selectTier('Game Anti-Cheat ($5000)')" class="w-full py-3 rounded bg-cyberborder text-neonred code-font font-bold hover:bg-neonred hover:text-white transition-all duration-300 border border-neonred/40">
-                    حجز النظام الأمني
+
+                <button onclick="openCheckout('Game Anti-Cheat', '$5000')" class="w-full bg-cyber-neonGreen hover:bg-emerald-400 text-black font-mono font-extrabold py-3.5 rounded transition-all shadow-[0_0_25px_rgba(0,255,102,0.5)] flex items-center justify-center gap-2">
+                    <i data-lucide="zap" class="w-4 h-4"></i> DEPLOY ELITE ANTI-CHEAT
                 </button>
             </div>
 
         </div>
     </section>
 
-    <!-- Terminal & Authentication Section -->
-    <section class="container mx-auto px-6 py-12 max-w-4xl">
-        <div class="bg-cybergray rounded-xl cyber-border p-6 md:p-8">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-cyberborder">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="w-3 h-3 rounded-full bg-neonred"></div>
+    <section id="terminal" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="bg-cyber-800 border border-cyber-600 rounded-xl overflow-hidden shadow-2xl">
+            <!-- Terminal Header -->
+            <div class="bg-cyber-700/80 px-4 py-3 flex items-center justify-between border-b border-cyber-600">
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-neongreen"></div>
-                    <span class="code-font text-xs text-gray-400 mr-2">SECURE_GATEWAY_v4.2</span>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="font-mono text-xs text-gray-400 ml-2">ghostpay-kernel-telemetry@kingofmachineerror:~#</span>
                 </div>
-                <div id="selected-badge" class="code-font text-xs text-neoncyan bg-cyberborder px-3 py-1 rounded border border-neoncyan/20">
-                    اختر الباقة المناسبة للأعلى
+                <div class="flex items-center space-x-2 font-mono text-xs text-cyber-neonGreen">
+                    <span class="w-2 h-2 rounded-full bg-cyber-neonGreen animate-ping"></span>
+                    <span>ACTIVE DEFENSE FEED</span>
+                </div>
+            </div>
+            <!-- Terminal Body -->
+            <div id="terminal-logs" class="p-6 font-mono text-xs sm:text-sm text-gray-300 h-64 overflow-y-auto space-y-2 bg-cyber-900/90">
+                <p class="text-cyber-electricCyan">[SYSTEM INITIALIZED] GhostPay Defense Grid active.</p>
+                <p class="text-gray-400">[04:19:02 UTC] HWID Guard node verified. 1,420 tokens active.</p>
+                <p class="text-gray-400">[04:19:15 UTC] WAF intercepted 14 SQL injection payloads on API endpoint /auth.</p>
+                <p class="text-cyber-neonGreen">[04:19:28 UTC] Game Anti-Cheat core checking memory integrity... All nodes clean.</p>
+                <p class="text-gray-400">[04:19:40 UTC] Zero unauthorized memory injections detected in last 24h.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="accountability" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="bg-gradient-to-r from-cyber-800 via-cyber-700 to-cyber-800 border border-cyber-electricCyan/40 rounded-2xl p-8 sm:p-12 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                <i data-lucide="shield-check" class="w-64 h-64 text-cyber-neonGreen"></i>
+            </div>
+            
+            <div class="max-w-3xl relative z-10">
+                <div class="inline-flex items-center gap-2 bg-cyber-900/80 px-3 py-1 rounded text-xs font-mono text-cyber-neonGreen mb-4 border border-cyber-neonGreen/30">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                    <span>DIRECT DEVELOPER ACCOUNTABILITY</span>
+                </div>
+                
+                <h2 class="text-3xl sm:text-4xl font-black font-mono text-white mb-6">
+                    "When you invest in GhostPay, you are investing in <span class="text-cyber-neonGreen text-glow">my personal signature</span>."
+                </h2>
+                
+                <p class="text-gray-300 font-mono text-sm sm:text-base leading-relaxed mb-6">
+                    As <span class="text-white font-bold underline decoration-cyber-electricCyan">KingofMachineError</span>, I do not sell automated templates or generic wrappers. Every single deployment carries my direct accountability. If your protected environment is compromised, I am personally on the front lines ensuring total system remediation.
+                </p>
+
+                <div class="flex flex-wrap gap-6 font-mono text-xs text-cyber-electricCyan">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-cyber-neonGreen"></i>
+                        <span>Zero Third-Party Dependencies</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-cyber-neonGreen"></i>
+                        <span>Direct Developer Support Channel</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-cyber-neonGreen"></i>
+                        <span>Uncompromising Elite Standards</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Checkout / Inquiry Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-cyber-800 border border-cyber-electricCyan/50 rounded-xl p-8 max-w-md w-full mx-4 shadow-[0_0_30px_rgba(0,240,255,0.3)] relative">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 rounded bg-cyber-700 border border-cyber-neonGreen flex items-center justify-center">
+                    <i data-lucide="shield" class="w-5 h-5 text-cyber-neonGreen"></i>
+                </div>
+                <div>
+                    <h3 id="modal-tier-title" class="text-xl font-black font-mono text-white">Acquire Tier</h3>
+                    <p class="text-xs font-mono text-cyber-electricCyan">Authorized by KingofMachineError</p>
                 </div>
             </div>
 
-            <!-- Web3Forms Form -->
-            <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4" onsubmit="handleFormSubmit(event)">
-                <!-- Web3Forms Access Key -->
-                <input type="hidden" name="apikey" value="cd7d0f10-38c2-467f-a674-1c5cf38791e5">
-                <input type="hidden" name="subject" value="عميل جديد يطلب خدمة من GhostPay">
-                <input type="hidden" name="from_name" value="GhostPay Terminal">
-                
-                <!-- Hidden Field to Capture Selected Tier -->
-                <input type="hidden" id="tier-input" name="Selected_Tier" value="لم يتم اختيار باقة بعد">
-
+            <form onsubmit="handleCheckoutSubmit(event)" class="space-y-4 font-mono">
                 <div>
-                    <label class="block code-font text-xs text-gray-400 mb-2">أدخل بريدك الإلكتروني للبدء والربط الفوري:</label>
-                    <input type="email" name="email" required placeholder="name@domain.com" class="w-full bg-cyberdark border border-cyberborder rounded px-4 py-3 text-white code-font focus:outline-none focus:border-neoncyan transition-colors">
+                    <label class="block text-xs text-gray-400 mb-1">PROJECT / ENTITY NAME</label>
+                    <input type="text" required placeholder="e.g., Nexus Studio / Game Core" class="w-full bg-cyber-900 border border-cyber-600 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-cyber-neonGreen">
                 </div>
-
-                <button type="submit" class="w-full py-4 rounded bg-neoncyan text-black code-font font-bold text-lg hover:bg-white transition-all duration-300 shadow-lg shadow-neoncyan/10">
-                    تأكيد الحجز والربط المباشر مع الملك
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">SECURE CONTACT (DISCORD / EMAIL)</label>
+                    <input type="text" required placeholder="handle#0000 or email@domain.com" class="w-full bg-cyber-900 border border-cyber-600 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-cyber-neonGreen">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">SELECTED INVESTMENT</label>
+                    <input type="text" id="modal-tier-price" readonly class="w-full bg-cyber-900/50 border border-cyber-600/50 rounded px-3 py-2 text-cyber-neonGreen text-sm font-bold">
+                </div>
+                
+                <button type="submit" class="w-full bg-cyber-neonGreen text-black font-extrabold py-3 rounded text-sm hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center justify-center gap-2 mt-6">
+                    <i data-lucide="lock" class="w-4 h-4"></i> INITIATE SECURE DEPLOYMENT
                 </button>
             </form>
+        </div>
+    </div>
 
-            <div id="success-msg" class="hidden mt-4 p-4 rounded bg-neongreen/10 border border-neongreen text-neongreen code-font text-center text-sm">
-                [SUCCESS] تم إرسال طلبك وبريدك بنجاح إلى شبكة KingofMachineError. سيتم التواصل معك فوراً.
+    <!-- Success Message Box -->
+    <div id="message-box" class="fixed bottom-6 right-6 z-50 bg-cyber-800 border border-cyber-neonGreen text-white px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(0,255,102,0.3)] hidden font-mono text-sm flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 text-cyber-neonGreen"></i>
+        <span id="message-text">Transmission received. KingofMachineError will establish secure comms shortly.</span>
+    </div>
+
+    <footer class="border-t border-cyber-600/40 bg-cyber-900 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <span class="text-xl font-black font-mono text-white">GHOST<span class="text-cyber-neonGreen">PAY</span></span>
+                <span class="text-gray-600">|</span>
+                <span class="text-xs font-mono text-gray-400">© 2026 KingofMachineError. All rights reserved.</span>
+            </div>
+            <div class="flex items-center space-x-6 font-mono text-xs text-gray-400">
+                <span class="flex items-center gap-1.5 text-cyber-neonGreen">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Elite Defense Standard
+                </span>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t border-cyberborder py-8 text-center text-xs code-font text-gray-600">
-        © 2026 GHOSTPAY. ALL RIGHTS RESERVED. ARCHITECTED BY KINGOFMACHINEERROR.
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript for Interactivity -->
     <script>
-        function selectTier(tierName) {
-            document.getElementById('tier-input').value = tierName;
-            const badge = document.getElementById('selected-badge');
-            badge.innerText = "الباقة المختارة: " + tierName;
-            badge.classList.remove('text-neoncyan', 'border-neoncyan/20');
-            badge.classList.add('text-neonred', 'border-neonred/40');
-            
-            // Scroll smoothly to form
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Terminal Log Simulator
+        const logs = [
+            "Scanning network endpoints for unauthorized intrusion...",
+            "HWID validation table synchronized across cluster nodes.",
+            "WAF rule updated: Blocked 42 malicious bot signatures.",
+            "Memory integrity check passed for active anti-cheat instance #901.",
+            "Zero-day packet anomaly neutralized at edge firewall."
+        ];
+
+        setInterval(() => {
+            const terminal = document.getElementById('terminal-logs');
+            if (terminal) {
+                const randomLog = logs[Math.floor(Math.random() * logs.length)];
+                const timestamp = new Date().toISOString().slice(11, 19);
+                const p = document.createElement('p');
+                p.className = "text-gray-400";
+                p.innerHTML = `[${timestamp} UTC] ${randomLog}`;
+                terminal.appendChild(p);
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }, 4000);
+
+        // Modal Functions
+        function openCheckout(tierName, price) {
+            document.getElementById('modal-tier-title').innerText = `Acquire ${tierName}`;
+            document.getElementById('modal-tier-price').value = `${tierName} — ${price}`;
+            document.getElementById('checkout-modal').classList.remove('hidden');
         }
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
 
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    document.getElementById('success-msg').classList.remove('hidden');
-                    form.reset();
-                } else {
-                    alert('حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
-                }
-            }).catch(error => {
-                alert('خطأ في الاتصال بالشبكة.');
-            });
+        function handleCheckoutSubmit(event) {
+            event.preventDefault();
+            closeCheckout();
+            const msgBox = document.getElementById('message-box');
+            msgBox.classList.remove('hidden');
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 5000);
         }
     </script>
 </body>
