@@ -113,6 +113,8 @@
             font-weight: bold;
             cursor: pointer;
             transition: opacity 0.2s;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn:hover {
             opacity: 0.9;
@@ -129,26 +131,43 @@
         }
         .modal-content {
             background: #1e293b;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
-            max-width: 400px;
+            max-width: 440px;
             width: 90%;
             border: 1px solid #475569;
             text-align: right;
         }
         .modal-content h3 {
             color: #00d2ff;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
         }
         .modal-content p {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
             color: #e2e8f0;
+        }
+        .pay-box {
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1rem;
+            color: #00d2ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border: 1px solid #334155;
+        }
+        .email-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
         }
         .close-btn {
             background: #ef4444;
-            margin-top: 15px;
+            margin-top: 8px;
             width: 100%;
         }
     </style>
@@ -163,7 +182,7 @@
     <!-- حقل اسم اللاعب -->
     <div class="player-box">
         <label for="playerName">اكتب اسمك في السيرفر (Minecraft Username):</label>
-        <input type="text" id="playerName" placeholder="مثال: KingofMachine" required>
+        <input type="text" id="playerName" placeholder="مثال: KingofMachineError" required>
     </div>
 
     <!-- خطة الرتب -->
@@ -230,13 +249,20 @@
     <!-- نافذة الدفع -->
     <div class="modal" id="payModal">
         <div class="modal-content">
-            <h3>تعليمات الدفع اليدوي</h3>
+            <h3>تعليمات الدفع والتحويل</h3>
             <p><b>اسم اللاعب:</b> <span id="displayPlayer" style="color: #38bdf8;"></span></p>
-            <p><b>الرتبة المطلوبة:</b> <span id="displayRank" style="color: #38bdf8;"></span> (<span id="displayPrice"></span>)</p>
-            <hr style="border: 0; border-top: 1px solid #475569; margin: 15px 0;">
-            <p><b>1. تحويل المبلغ عبر STC Pay أو Urpay إلى الرقم:</b></p>
-            <p style="background: #0f172a; padding: 10px; border-radius: 6px; text-align: center; font-size: 1.1rem; color: #00d2ff; font-weight: bold;">0545268515</p>
-            <p><b>2. بعد التحويل، أرسل صورة الإيصال مع اسمك في الديسكورد أو الواتساب لتفعيل الرتبة فوراً!</b></p>
+            <p><b>الرتبة:</b> <span id="displayRank" style="color: #38bdf8;"></span> (<span id="displayPrice"></span>)</p>
+            <hr style="border: 0; border-top: 1px solid #475569; margin: 10px 0;">
+            
+            <p><b>1. تحويل المبلغ عبر STC Pay:</b></p>
+            <div class="pay-box">STC Pay: 0545368515</div>
+
+            <p><b>2. أو تحويل المبلغ عبر Urpay:</b></p>
+            <div class="pay-box">Urpay:SA9380204992168222121011</div>
+
+            <p><b>3. بعد التحويل، اضغط الزر لإرسال الإيصال (وأرفق صورة التحويل بالإيميل):</b></p>
+            <a href="#" id="emailBtn" class="btn email-btn" target="_blank">✉️ إرسال الإيصال عبر الإيميل</a>
+            
             <button class="btn close-btn" onclick="closeCheckout()">إغلاق</button>
         </div>
     </div>
@@ -252,6 +278,14 @@
             document.getElementById('displayPlayer').innerText = playerName;
             document.getElementById('displayRank').innerText = rank;
             document.getElementById('displayPrice').innerText = price;
+            
+            // إعداد رابط الإيميل التلقائي
+            const myEmail = "-KingofMachineError@proton.me"; // <-- استبدل هذا بإيميلك الحقيقي لاستقبال الإيصالات
+            const subject = encodeURIComponent(`إيصال دفع رتبة ${rank} - اللاعب: ${playerName}`);
+            const body = encodeURIComponent(`مرحباً,\n\nقمت بتحويل مبلغ ${price} لشراء رتبة ${rank}.\nاسم اللاعب في السيرفر: ${playerName}\n\n[يرجى إرفاق صورة إيصال التحويل هنا قبل الإرسال]`);
+            
+            document.getElementById('emailBtn').href = `mailto:${myEmail}?subject=${subject}&body=${body}`;
+            
             document.getElementById('payModal').style.display = 'flex';
         }
 
