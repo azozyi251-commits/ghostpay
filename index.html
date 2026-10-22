@@ -3,268 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghostpay.work | متجر سيرفر Herobrine </title>
+    <title>Ghostpay.work - متجر الإمبراطورية</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* منع تظليل النصوص وحمايتها من النسخ */
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
         body {
             background-color: #0b0f19;
-            color: #e2e8f0;
-            overflow-x: hidden;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
         }
         header {
-            background: rgba(15, 23, 42, 0.9);
-            border-bottom: 1px solid #1e293b;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #38bdf8;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-        .server-ip {
-            color: #94a3b8;
-            font-size: 15px;
-            direction: ltr;
-            unicode-bidi: embed;
-        }
-        .server-ip span {
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .hero {
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), #0b0f19);
-            border-bottom: 1px solid #1e293b;
+            margin-bottom: 50px;
         }
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 15px;
-            color: #f8fafc;
+        header h1 {
+            font-size: 2.8rem;
+            color: #00d2ff;
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            margin-bottom: 10px;
         }
-        .hero p {
-            font-size: 18px;
-            color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto;
+        header p {
+            color: #8a99ad;
+            font-size: 1.1rem;
         }
         .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: #38bdf8;
-        }
-        .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
+            max-width: 1200px;
+            width: 100%;
         }
         .card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 30px;
+            background: linear-gradient(145deg, #131b2e, #0e1422);
+            border: 1px solid #1f2c47;
+            border-radius: 16px;
+            padding: 30px 20px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
-            border-color: #38bdf8;
+            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15);
+            border-color: #00d2ff;
         }
         .card.featured {
-            border: 2px solid #38bdf8;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid #00d2ff;
+            background: linear-gradient(145deg, #15223c, #101828);
         }
         .badge {
             position: absolute;
-            top: -12px;
-            right: 20px;
-            background: #38bdf8;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00d2ff;
             color: #0b0f19;
-            padding: 4px 12px;
-            font-size: 12px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
             font-weight: bold;
             border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 210, 255, 0.3);
         }
-        .card h3 {
-            font-size: 24px;
+        .card h2 {
+            font-size: 1.8rem;
             margin-bottom: 15px;
-            color: #f8fafc;
+            color: #fff;
         }
         .price {
-            font-size: 32px;
+            font-size: 2.2rem;
             font-weight: bold;
-            color: #38bdf8;
-            margin-bottom: 20px;
-        }
-        .price span {
-            font-size: 14px;
-            color: #94a3b8;
+            color: #00d2ff;
+            margin-bottom: 25px;
         }
         .features {
             list-style: none;
             margin-bottom: 30px;
             text-align: right;
+            padding-right: 10px;
         }
         .features li {
             padding: 8px 0;
-            border-bottom: 1px solid #334155;
-            color: #cbd5e1;
-            font-size: 14px;
-            direction: rtl;
+            color: #b0c4de;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .features li::before {
             content: "✓ ";
-            color: #38bdf8;
+            color: #00ff88;
             font-weight: bold;
-            margin-left: 8px;
+            margin-left: 5px;
         }
-        .btn {
-            display: inline-block;
+        .buy-btn {
+            background: linear-gradient(135deg, #00d2ff, #0077ff);
+            color: white;
+            border: none;
             width: 100%;
             padding: 12px;
-            background: #38bdf8;
-            color: #0b0f19;
+            font-size: 1.1rem;
             font-weight: bold;
-            border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 119, 255, 0.3);
         }
-        .btn:hover {
-            background: #0ea5e9;
+        .buy-btn:hover {
+            opacity: 0.9;
         }
-        footer {
-            text-align: center;
+
+        /* Modal نافذة كتابة الاسم والدفع */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #131b2e;
             padding: 30px;
-            background: #0f172a;
-            border-top: 1px solid #1e293b;
-            color: #64748b;
-            margin-top: 80px;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #1f2c47;
+            text-align: center;
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #00d2ff;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: #0b0f19;
+            border: 1px solid #1f2c47;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+        .pay-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .apple-pay {
+            background: #000;
+            color: #fff;
+            border: 1px solid #444;
+        }
+        .mada-pay {
+            background: #003366;
+            color: #fff;
+        }
+        .close-modal {
+            margin-top: 15px;
+            background: transparent;
+            border: none;
+            color: #8a99ad;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Ghostpay.work 👻</div>
-        <div class="server-ip">الموقع: <span>www.ghostpay.work</span></div>
+        <h1>Ghostpay.work Store</h1>
+        <p>اختر رتبتك وارتفع إلى قمة الإمبراطورية</p>
     </header>
 
-    <section class="hero">
-        <p>اختر رتبتك بعناية وامنح نفسك القوة والصلاحيات المطلقة داخل السيرفر.</p>
-    </section>
-
     <div class="container">
-        <h2 class="section-title">الرتب المتاحة</h2>
-        
-        <div class="pricing-grid">
-            <!-- رتبة Wood -->
-            <div class="card">
-                <h3>Wood 🪵</h3>
-                <div class="price">5$ <span>/ شهرياً</span></div>
-                <ul class="features">
-                    <li>بادج رتبة Wood بالتشات</li>
-                    <li>أمر /kit wood الأساسي</li>
-                </ul>
-                <a href="#buy" class="btn">شراء الرتبة</a>
-            </div>
+        <!-- رتبة Wood -->
+        <div class="card">
+            <h2>Wood</h2>
+            <div class="price">5$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
+            <ul class="features">
+                <li>بادج رتبة Wood بالتشات</li>
+                <li>أمر /kit wood الأساسي</li>
+            </ul>
+            <button class="buy-btn" onclick="openModal('Wood', '5$')">شراء الرتبة</button>
+        </div>
 
-            <!-- رتبة Iron -->
-            <div class="card">
-                <h3>Iron 🛡️</h3>
-                <div class="price">15$ <span>/ شهرياً</span></div>
-                <ul class="features">
-                    <li>جميع مميزات Wood</li>
-                    <li>أمر /kit iron المطور</li>
-                    <li>صندوق أمتعة شخصي (Ender Chest)</li>
-                </ul>
-                <a href="#buy" class="btn">شراء الرتبة</a>
-            </div>
+        <!-- رتبة Iron -->
+        <div class="card">
+            <h2>Iron</h2>
+            <div class="price">15$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
+            <ul class="features">
+                <li>جميع مميزات Wood</li>
+                <li>أمر /kit iron المطور</li>
+                <li>صندوق أمتعة شخصي (Ender Chest)</li>
+            </ul>
+            <button class="buy-btn" onclick="openModal('Iron', '15$')">شراء الرتبة</button>
+        </div>
 
-            <!-- رتبة Gold -->
-            <div class="card">
-                <h3>Gold 🪙</h3>
-                <div class="price">30$ <span>/ شهرياً</span></div>
-                <ul class="features">
-                    <li>جميع مميزات Iron</li>
-                    <li>أمر /kit gold الفاخر</li>
-                    <li>لون اسم مميز بالتشات</li>
-                </ul>
-                <a href="#buy" class="btn">شراء الرتبة</a>
-            </div>
+        <!-- رتبة Gold -->
+        <div class="card">
+            <h2>Gold</h2>
+            <div class="price">30$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
+            <ul class="features">
+                <li>جميع مميزات Iron</li>
+                <li>أمر /kit gold الفاخر</li>
+                <li>لون اسم مميز بالتشات</li>
+            </ul>
+            <button class="buy-btn" onclick="openModal('Gold', '30$')">شراء الرتبة</button>
+        </div>
 
-            <!-- رتبة Diamond (مميزة) -->
-            <div class="card featured">
-                <div class="badge">القمة الأسطورية</div>
-                <h3>Diamond 💎</h3>
-                <div class="price">60$ <span>/ دائمة</span></div>
-                <ul class="features">
-                    <li>جميع الصلاحيات السابقة</li>
-                    <li>صندوق أمتعة شخصي إضافي (Ender Chest)</li>
-                    <li>أدوات وأسلحة Diamond مخصصة</li>
-                    <li>أولوية دخول السيرفر عند الامتلاء</li>
-                    <li>دعم فني خاص ومباشر</li>
-                    <li>لون اسم مميز بالتشات</li>
-                </ul>
-                <a href="#buy" class="btn">شراء الرتبة</a>
-            </div>
+        <!-- رتبة Diamond -->
+        <div class="card featured">
+            <div class="badge">القمة الأسطورية</div>
+            <h2>Diamond</h2>
+            <div class="price">60$ <span style="font-size: 1rem; color: #8a99ad;">/ دائمة</span></div>
+            <ul class="features">
+                <li>جميع الصلاحيات السابقة</li>
+                <li>صندوق أمتعة شخصي إضافي</li>
+                <li>أدوات وأسلحة Diamond مخصصة</li>
+                <li>أولوية دخول السيرفر عند الامتلاء</li>
+                <li>دعم فني خاص ومباشر</li>
+                <li>لون اسم مميز بالتشات</li>
+            </ul>
+            <button class="buy-btn" onclick="openModal('Diamond', '60$')">شراء الرتبة</button>
         </div>
     </div>
 
-    <footer>
-        <p>جميع الحقوق محفوظة © 2026 - Ghostpay.work 👻 (محمي حصرياً بالحارس الخفي)</p>
-    </footer>
+    <!-- نافذة إدخال اسم اللاعب والدفع -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">شراء الرتبة</h3>
+            <p style="color: #8a99ad; font-size: 0.9rem; margin-bottom: 10px;">أدخل اسمك في ماينكرافت بدقة لإتمام الطلب:</p>
+            <input type="text" id="minecraftUsername" placeholder="اكتب اسمك هنا...">
+            <div class="payment-options">
+                <button class="pay-btn apple-pay" onclick="processPayment('Apple Pay')"> Pay ادفع بـ</button>
+                <button class="pay-btn mada-pay" onclick="processPayment('Mada')">بطاقة مدى (Mada)</button>
+            </div>
+            <button class="close-modal" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
 
-    <!-- سكربت الحماية المتقدم -->
     <script>
-        // 1. منع النقر بالزر الأيمن
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        let selectedRank = '';
+        let selectedPrice = '';
 
-        // 2. منع اختصارات المطورين وسرقة الأكواد
-        document.addEventListener('keydown', function(e) {
-            if (
-                e.keyCode === 123 || // F12
-                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I / J
-                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
-                (e.ctrlKey && e.keyCode === 83)    // Ctrl+S
-            ) {
-                e.preventDefault();
-                return false;
+        function openModal(rank, price) {
+            selectedRank = rank;
+            selectedPrice = price;
+            document.getElementById('modalTitle').innerText = `شراء رتبة ${rank} (${price})`;
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('checkoutModal').style.display = 'none';
+            document.getElementById('minecraftUsername').value = '';
+        }
+
+        function processPayment(method) {
+            const username = document.getElementById('minecraftUsername').value.trim();
+            if (!username) {
+                alert('الرجاء كتابة اسم اللاعب في ماينكرافت أولاً!');
+                return;
             }
-        });
-
-        // 3. منع سحب ونسخ النصوص
-        document.addEventListener('copy', function(e) {
-            e.preventDefault();
-        });
+            alert(`تم توجيهك لبوابة الدفع (${method})\nالرتبة: ${selectedRank}\nاسم اللاعب: ${username}\n\n(جاري الربط ببوابة الدفع الحقيقية للاستلام الفوري)...`);
+            closeModal();
+        }
     </script>
 
 </body>
