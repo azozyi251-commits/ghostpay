@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: ghostpay
+    env: static
+    staticPublishPath: .
+    buildCommand: ""
+    publishPath: "."
