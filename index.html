@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghostpay.work | متجر الرتب الأسطورية (حماية مشددة)</title>
+    <title>Ghostpay.work | متجر الرتب الأسطورية</title>
     <style>
         * {
             margin: 0;
@@ -125,6 +125,7 @@
             border-bottom: 1px solid #334155;
             color: #cbd5e1;
             font-size: 14px;
+            direction: rtl;
         }
         .features li::before {
             content: "✓ ";
@@ -181,6 +182,7 @@
                 <ul class="features">
                     <li>بادج رتبة Wood بالتشات</li>
                     <li>أمر /kit wood الأساسي</li>
+                    <li>حفظ موقعين للنقل (/sethome)</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -193,6 +195,7 @@
                     <li>جميع مميزات Wood</li>
                     <li>أمر /kit iron المطور</li>
                     <li>صندوق أمتعة شخصي (Ender Chest)</li>
+                    <li>حفظ 5 مواقع للنقل</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -203,9 +206,9 @@
                 <div class="price">30$ <span>/ شهرياً</span></div>
                 <ul class="features">
                     <li>جميع مميزات Iron</li>
+                    <li>إمكانية الطيران في اللوبي (lobby fly/)</li>
                     <li>أمر /kit gold الفاخر</li>
-                    <li>لون اسم ابيض بالتشات</li>
-                    <li>صندوق أمتعة شخصي (Ender Chest)</li>
+                    <li>لون اسم مميز بالتشات</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -216,10 +219,11 @@
                 <h3>Diamond 💎</h3>
                 <div class="price">60$ <span>/ دائمة</span></div>
                 <ul class="features">
-                    <li>جميع الصلاحيات والمميزات السابقة</li>
+                    <li>جميع الصلاحيات السابقة</li>
+                    <li>صندوق أمتعة شخصي إضافي (Ender Chest)</li>
                     <li>أدوات وأسلحة Diamond مخصصة</li>
-                    <li>إمكانية الطيران في اللوبي (/lobby fly)</li>
-                    <li>لون اسم مميز بالتشات</li>
+                    <li>طيران دائم في كل العوالم (fly/)</li>
+                    <li>أولوية دخول السيرفر عند الامتلاء</li>
                     <li>دعم فني خاص ومباشر</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
@@ -228,27 +232,25 @@
     </div>
 
     <footer>
-        <p>جميع الحقوق محفوظة © 2026 - Ghostpay.work 👻 (موقع محمي حصرياً)</p>
+        <p>جميع الحقوق محفوظة © 2026 - Ghostpay.work 👻 (محمي حصرياً بالحارس الخفي)</p>
     </footer>
 
-    <!-- سكربت الحماية المتقدم لصد المحاولات -->
+    <!-- سكربت الحماية المتقدم -->
     <script>
         // 1. منع النقر بالزر الأيمن
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            alert('حماية النظام: النقر بالزر الأيمن غير مسموح في هذا الموقع! 🛡️');
         });
 
-        // 2. منع اختصارات المطورين وسرقة الأكواد (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
+        // 2. منع اختصارات المطورين وسرقة الأكواد
         document.addEventListener('keydown', function(e) {
             if (
                 e.keyCode === 123 || // F12
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I / J
-                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U (عرض مصدر الصفحة)
-                (e.ctrlKey && e.keyCode === 83)    // Ctrl+S (حفظ الصفحة)
+                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+                (e.ctrlKey && e.keyCode === 83)    // Ctrl+S
             ) {
                 e.preventDefault();
-                alert('عذراً يا إمبراطور، هذا الإجراء محظور حمايةً للملكية الفكرية! ⚙️');
                 return false;
             }
         });
@@ -256,7 +258,6 @@
         // 3. منع سحب ونسخ النصوص
         document.addEventListener('copy', function(e) {
             e.preventDefault();
-            alert('النسخ محظور! محتويات Ghostpay.work مؤمنة بالكامل. 🔒');
         });
     </script>
 
