@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghostpay.work | متجر الرتب الأسطورية</title>
+    <title>Ghostpay.work | متجر الرتب الأسطورية (حماية مشددة)</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* منع تظليل النصوص وحمايتها من النسخ */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
         body {
             background-color: #0b0f19;
@@ -176,7 +181,6 @@
                 <ul class="features">
                     <li>بادج رتبة Wood بالتشات</li>
                     <li>أمر /kit wood الأساسي</li>
-                    <li>حفظ موقعين للنقل (/sethome)</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -188,8 +192,7 @@
                 <ul class="features">
                     <li>جميع مميزات Wood</li>
                     <li>أمر /kit iron المطور</li>
-                    <li>حقيبة شخصية إضافية (Enderchest)</li>
-                    <li>حفظ 5 مواقع للنقل</li>
+                    <li>صندوق أمتعة شخصي (Ender Chest)</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -200,9 +203,9 @@
                 <div class="price">30$ <span>/ شهرياً</span></div>
                 <ul class="features">
                     <li>جميع مميزات Iron</li>
-                    <li>إمكانية الطيران في اللوبي (/lobby fly)</li>
                     <li>أمر /kit gold الفاخر</li>
-                    <li>لون اسم مميز بالتشات</li>
+                    <li>لون اسم ابيض بالتشات</li>
+                    <li>صندوق أمتعة شخصي (Ender Chest)</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
             </div>
@@ -215,7 +218,8 @@
                 <ul class="features">
                     <li>جميع الصلاحيات والمميزات السابقة</li>
                     <li>أدوات وأسلحة Diamond مخصصة</li>
-                    <li>أولوية دخول السيرفر عند الامتلاء</li>
+                    <li>إمكانية الطيران في اللوبي (/lobby fly)</li>
+                    <li>لون اسم مميز بالتشات</li>
                     <li>دعم فني خاص ومباشر</li>
                 </ul>
                 <a href="#buy" class="btn">شراء الرتبة</a>
@@ -224,8 +228,37 @@
     </div>
 
     <footer>
-        <p>جميع الحقوق محفوظة © 2026 - Ghostpay.work 👻</p>
+        <p>جميع الحقوق محفوظة © 2026 - Ghostpay.work 👻 (موقع محمي حصرياً)</p>
     </footer>
+
+    <!-- سكربت الحماية المتقدم لصد المحاولات -->
+    <script>
+        // 1. منع النقر بالزر الأيمن
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('حماية النظام: النقر بالزر الأيمن غير مسموح في هذا الموقع! 🛡️');
+        });
+
+        // 2. منع اختصارات المطورين وسرقة الأكواد (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I / J
+                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U (عرض مصدر الصفحة)
+                (e.ctrlKey && e.keyCode === 83)    // Ctrl+S (حفظ الصفحة)
+            ) {
+                e.preventDefault();
+                alert('عذراً يا إمبراطور، هذا الإجراء محظور حمايةً للملكية الفكرية! ⚙️');
+                return false;
+            }
+        });
+
+        // 3. منع سحب ونسخ النصوص
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            alert('النسخ محظور! محتويات Ghostpay.work مؤمنة بالكامل. 🔒');
+        });
+    </script>
 
 </body>
 </html>
