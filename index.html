@@ -119,7 +119,6 @@
             opacity: 0.9;
         }
 
-        /* نافذة إدخال الاسم ومحفظة الدفع */
         .modal {
             display: none;
             position: fixed;
@@ -205,7 +204,6 @@
     </header>
 
     <div class="container">
-        <!-- رتبة Wood -->
         <div class="card">
             <h2>Wood</h2>
             <div class="price">5$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
@@ -216,7 +214,6 @@
             <button class="buy-btn" onclick="openModal('Wood', '5$')">شراء الرتبة</button>
         </div>
 
-        <!-- رتبة Iron -->
         <div class="card">
             <h2>Iron</h2>
             <div class="price">15$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
@@ -228,7 +225,6 @@
             <button class="buy-btn" onclick="openModal('Iron', '15$')">شراء الرتبة</button>
         </div>
 
-        <!-- رتبة Gold -->
         <div class="card">
             <h2>Gold</h2>
             <div class="price">30$ <span style="font-size: 1rem; color: #8a99ad;">/ شهرياً</span></div>
@@ -240,7 +236,6 @@
             <button class="buy-btn" onclick="openModal('Gold', '30$')">شراء الرتبة</button>
         </div>
 
-        <!-- رتبة Diamond -->
         <div class="card featured">
             <div class="badge">القمة الأسطورية</div>
             <h2>Diamond</h2>
@@ -257,7 +252,6 @@
         </div>
     </div>
 
-    <!-- نافذة إدخال اسم اللاعب والمحافظ الرقمية -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">شراء الرتبة</h3>
@@ -296,7 +290,7 @@
                 alert('الرجاء كتابة اسم اللاعب في ماينكرافت أولاً!');
                 return;
             }
-            alert(`تم تأكيد البيانات:\nالرتبة: ${selectedRank}\nاسم اللاعب: ${username}\nطريقة الدفع: ${method}\n\n(سيتم تحويلك الآن لتأكيد الدفع واستلام إشعار الإدارة فوراً)...`);
+            alert(`تم تأكيد البيانات:\nالرتبة: ${selectedRank}\nاسم اللاعب: ${username}\nطريقة الدفع: ${method}\n\n(جاهز لاستقبال الطلبات والأرباح في إمبراطورية Ghostpay.work بنجاح)!`);
             closeModal();
         }
     </script>
