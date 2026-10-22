@@ -172,4 +172,92 @@
         <div class="card featured">
             <div>
                 <h3>Diamond</h3>
-                <div
+                <div class="price">60$ / دائمة</div>
+                <ul class="features">
+                    <li>✓ جميع الصلاحيات السابقة</li>
+                    <li>✓ صندوق أمتعة شخصي إضافي</li>
+                    <li>✓ أدوات وأسلحة Diamond مخصصة</li>
+                    <li>✓ أولوية دخول السيرفر عند الامتلاء</li>
+                    <li>✓ دعم فني خاص ومباشر</li>
+                    <li>✓ لون اسم مميز بالتشات</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="openCheckout('Diamond', '60$')">شراء الرتبة</button>
+        </div>
+
+        <!-- Gold -->
+        <div class="card">
+            <div>
+                <h3>Gold</h3>
+                <div class="price">30$ / شهرياً</div>
+                <ul class="features">
+                    <li>✓ جميع مميزات Iron</li>
+                    <li>✓ أمر /kit gold الفاخر</li>
+                    <li>✓ لون اسم مميز بالتشات</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="openCheckout('Gold', '30$')">شراء الرتبة</button>
+        </div>
+
+        <!-- Iron -->
+        <div class="card">
+            <div>
+                <h3>Iron</h3>
+                <div class="price">15$ / شهرياً</div>
+                <ul class="features">
+                    <li>✓ جميع مميزات Wood</li>
+                    <li>✓ أمر /kit iron المطور</li>
+                    <li>✓ صندوق أمتعة شخصي (Ender Chest)</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="openCheckout('Iron', '15$')">شراء الرتبة</button>
+        </div>
+
+        <!-- Wood -->
+        <div class="card">
+            <div>
+                <h3>Wood</h3>
+                <div class="price">5$ / شهرياً</div>
+                <ul class="features">
+                    <li>✓ بادج رتبة بالتشات</li>
+                    <li>✓ أمر /kit wood الأساسي</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="openCheckout('Wood', '5$')">شراء الرتبة</button>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع -->
+    <div class="modal" id="payModal">
+        <div class="modal-content">
+            <h3>تعليمات الدفع اليدوي</h3>
+            <p><b>اسم اللاعب:</b> <span id="displayPlayer" style="color: #38bdf8;"></span></p>
+            <p><b>الرتبة المطلوبة:</b> <span id="displayRank" style="color: #38bdf8;"></span> (<span id="displayPrice"></span>)</p>
+            <hr style="border: 0; border-top: 1px solid #475569; margin: 15px 0;">
+            <p><b>1. تحويل المبلغ عبر STC Pay أو Urpay إلى الرقم:</b></p>
+            <p style="background: #0f172a; padding: 10px; border-radius: 6px; text-align: center; font-size: 1.1rem; color: #00d2ff; font-weight: bold;">05xxxxxxxx</p>
+            <p><b>2. بعد التحويل، أرسل صورة الإيصال مع اسمك في الديسكورد أو الواتساب لتفعيل الرتبة فوراً!</b></p>
+            <button class="btn close-btn" onclick="closeCheckout()">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        function openCheckout(rank, price) {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (!playerName) {
+                alert('الرجاء كتابة اسمك في السيرفر أولاً أعلى الصفحة!');
+                document.getElementById('playerName').focus();
+                return;
+            }
+            document.getElementById('displayPlayer').innerText = playerName;
+            document.getElementById('displayRank').innerText = rank;
+            document.getElementById('displayPrice').innerText = price;
+            document.getElementById('payModal').style.display = 'flex';
+        }
+
+        function closeCheckout() {
+            document.getElementById('payModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
